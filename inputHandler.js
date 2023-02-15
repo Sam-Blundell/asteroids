@@ -9,5 +9,10 @@ export default class InputHandler {
                 this.pressedKeys.push(event.code);
             }
         });
+        window.addEventListener('keyup', event => {
+            if (this.pressedKeys.includes(event.code)) {
+                this.pressedKeys.splice(this.pressedKeys.indexOf(event.code), 1);
+            }
+        })
     }
 }
