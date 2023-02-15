@@ -13,6 +13,7 @@ export default class SpaceShip {
         this.forwardSpeed = 2;
     }
     update(input) {
+        // move the ship in the direction it's facing
         if (input.has('ArrowUp')) {
             this.xVelocity = this.forwardSpeed * Math.cos(this.direction);
             this.yVelocity = this.forwardSpeed * Math.sin(this.direction);
@@ -37,7 +38,7 @@ export default class SpaceShip {
             this.yPos = -this.height / 2;
         }
 
-        // turning
+        // turning the ship
         if (input.has('ArrowRight')) {
             this.direction = (this.direction + this.turnSpeed) % (2 * Math.PI);
         }
