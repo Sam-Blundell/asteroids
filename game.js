@@ -9,7 +9,7 @@ export default class Game {
         this.spaceShip = new SpaceShip(this);
     }
     update(timeDelta) {
-        this.spaceShip.update(this.input.pressedKeys);
+        this.spaceShip.update(timeDelta, this.input.pressedKeys);
     }
     draw(context) {
         this.spaceShip.draw(context);
