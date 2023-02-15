@@ -1,4 +1,4 @@
-
+import Bullet from "./bullet.js";
 export default class SpaceShip {
     constructor(game) {
         this.game = game;
@@ -11,8 +11,16 @@ export default class SpaceShip {
         this.xVelocity = 0;
         this.yVelocity = 0;
         this.forwardSpeed = 2;
+        this.bullets = [];
+        this.laserCooldown = 0;
     }
-    update(input) {
+    shoot() {
+        if (this.laserCooldown === 0) {
+            this.bullets.push(new Bullet(this));
+            this.laserCooldown = 100;
+        }
+    }
+    update(timeDelta, input) {
         // move the ship in the direction it's facing
         if (input.has('ArrowUp')) {
             this.xVelocity = this.forwardSpeed * Math.cos(this.direction);
@@ -45,8 +53,19 @@ export default class SpaceShip {
         if (input.has('ArrowLeft')) {
             this.direction = (this.direction - this.turnSpeed + (2 * Math.PI)) % (2 * Math.PI);
         }
-    }
-    draw(context) {
+
+        // firing laser
+        if (input.has('Space') && this.bullets.length < 3) {
+            this.shoot();
+        }
+
+        this.laserCooldown = this.laserCooldown < 0 ? 0 : this.laserCooldown - timeDelta;
+        this.bullets = this.bullets.filter(bullet => bullet.markedForDeletion === false);
+        this.bullets.forEach(bullet => bullet.update(timeDelta));
+
+        }
+        draw(context) {
+
         context.save(); // save the current transformation matrix
 
         context.translate(this.xPos, this.yPos); // move to the center of the triangle
@@ -61,5 +80,7 @@ export default class SpaceShip {
         context.stroke();
 
         context.restore(); // restore the previous transformation matrix
+
+        this.bullets.forEach(bullet => bullet.draw(context));
     }
 }
