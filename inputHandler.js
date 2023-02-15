@@ -2,16 +2,22 @@
 export default class InputHandler {
     constructor(game) {
         this.game = game;
-        this.validKeys = ['ArrowRight', 'ArrowLeft', 'ArrowDown', 'ArrowUp', 'Space'];
-        this.pressedKeys = [];
+        this.validKeys = Object.freeze(new Set([
+            'ArrowRight',
+            'ArrowLeft',
+            'ArrowDown',
+            'ArrowUp',
+            'Space'
+        ]));
+        this.pressedKeys = new Set();
         window.addEventListener('keydown', event => {
-            if (this.validKeys.includes(event.code) && !this.pressedKeys.includes(event.code)) {
-                this.pressedKeys.push(event.code);
+            if (this.validKeys.has(event.code)) {
+                this.pressedKeys.add(event.code);
             }
         });
         window.addEventListener('keyup', event => {
-            if (this.pressedKeys.includes(event.code)) {
-                this.pressedKeys.splice(this.pressedKeys.indexOf(event.code), 1);
+            if (this.pressedKeys.has(event.code)) {
+                this.pressedKeys.delete(event.code);
             }
         })
     }

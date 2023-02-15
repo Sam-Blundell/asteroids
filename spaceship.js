@@ -13,7 +13,7 @@ export default class SpaceShip {
         this.forwardSpeed = 2;
     }
     update(input) {
-        if (input.includes('ArrowUp')) {
+        if (input.has('ArrowUp')) {
             this.xVelocity = this.forwardSpeed * Math.cos(this.direction);
             this.yVelocity = this.forwardSpeed * Math.sin(this.direction);
         } else {
@@ -22,10 +22,10 @@ export default class SpaceShip {
         }
         this.xPos += this.xVelocity;
         this.yPos += this.yVelocity;
-        if (input.includes('ArrowRight')) {
+        if (input.has('ArrowRight')) {
             this.direction = (this.direction + this.turnSpeed) % (2 * Math.PI);
         }
-        if (input.includes('ArrowLeft')) {
+        if (input.has('ArrowLeft')) {
             this.direction = (this.direction - this.turnSpeed + (2 * Math.PI)) % (2 * Math.PI);
         }
     }
