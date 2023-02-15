@@ -22,6 +22,22 @@ export default class SpaceShip {
         }
         this.xPos += this.xVelocity;
         this.yPos += this.yVelocity;
+
+        // Wrap around the x-axis
+        if (this.xPos < -this.width / 2) {
+            this.xPos = this.game.screenWidth + this.width / 2;
+        } else if (this.xPos > this.game.screenWidth + this.width / 2) {
+            this.xPos = -this.width / 2;
+        }
+
+        // Wrap around the y-axis
+        if (this.yPos < -this.height / 2) {
+            this.yPos = this.game.screenHeight + this.height / 2;
+        } else if (this.yPos > this.game.screenHeight + this.height / 2) {
+            this.yPos = -this.height / 2;
+        }
+
+        // turning
         if (input.has('ArrowRight')) {
             this.direction = (this.direction + this.turnSpeed) % (2 * Math.PI);
         }
