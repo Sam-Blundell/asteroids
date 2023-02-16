@@ -25,7 +25,7 @@ export default class Game {
     }
     draw(context) {
         context.fillStyle = 'black';
-        context.fillRect(0, 0, gameScreen.height, gameScreen.width);
+        context.fillRect(0, 0, this.screenWidth, this.screenHeight);
         context.fillStyle = 'white';
         this.spaceShip.draw(context);
         this.asteroids.forEach(asteroid => asteroid.draw(context));

@@ -9,12 +9,13 @@ export default class Bullet {
         this.yVelocity = 5 * Math.sin(spaceship.direction);
         this.age = 0;
         this.markedForDeletion = false;
+        this.bulletLifetime = 1500;
     }
     checkCollision() {
         this.game.asteroids.forEach(asteroid => {
             const distanceX = (this.xPos + 2) - asteroid.xPos;
             const distanceY = (this.yPos + 2) - asteroid.yPos;
-            const distance = Math.sqrt(distanceX*distanceX + distanceY*distanceY);
+            const distance = Math.sqrt(distanceX**2 + distanceY**2);
 
             if (distance < asteroid.radius + 2) {
                 asteroid.explode();
@@ -24,7 +25,7 @@ export default class Bullet {
     }
     update(timeDelta) {
         this.age += timeDelta;
-        if (this.age > 1500) this.markedForDeletion = true;
+        if (this.age > this.bulletLifetime) this.markedForDeletion = true;
         this.xPos += this.xVelocity;
         this.yPos += this.yVelocity;
 

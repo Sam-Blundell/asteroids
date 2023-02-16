@@ -1,8 +1,8 @@
 class Asteroid {
     constructor(asteroid) {
         this.game = asteroid.game || asteroid;
-        this.xPos = asteroid.xPos || Math.floor(Math.random() * 600);;
-        this.yPos = asteroid.yPos || Math.floor(Math.random() * 600);;
+        this.xPos = asteroid.xPos || Math.floor(Math.random() * this.game.screenWidth);
+        this.yPos = asteroid.yPos || Math.floor(Math.random() * this.game.screenHeight);
         this.direction = Math.random() * 2 * Math.PI;
         this.xVelocity = Math.cos(this.direction);
         this.yVelocity = Math.sin(this.direction);
