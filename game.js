@@ -8,17 +8,20 @@ export default class Game {
         this.screenWidth = width;
         this.input = new InputHandler(this);
         this.spaceShip = new SpaceShip(this);
-        this.asteroids = [
-            new BigAsteroid(this),
-            new BigAsteroid(this),
-            new BigAsteroid(this),
-            new BigAsteroid(this),
-        ];
+        this.asteroids = [];
+    }
+    spawnAsteroids(asteroidCount) {
+        for (let i = 0; i < asteroidCount; i++) {
+            this.asteroids.push(new BigAsteroid(this));
+        }
     }
     update(timeDelta) {
         this.spaceShip.update(timeDelta, this.input.pressedKeys);
         this.asteroids = this.asteroids.filter(asteroid => asteroid.markedForDeletion === false);
         this.asteroids.forEach(asteroid => asteroid.update());
+        if (this.asteroids.length === 0) {
+            this.spawnAsteroids(4);
+        }
     }
     draw(context) {
         context.fillStyle = 'black';
