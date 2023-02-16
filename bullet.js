@@ -3,13 +3,13 @@ export default class Bullet {
         this.game = spaceship.game;
         this.spaceship = spaceship;
         this.size = 4;
-        this.xPos = spaceship.xPos;
-        this.yPos = spaceship.yPos;
+        this.xPos = spaceship.xPos + (Math.cos(spaceship.direction) * (spaceship.height / 2));
+        this.yPos = spaceship.yPos + (Math.sin(spaceship.direction) * (spaceship.height / 2));
         this.xVelocity = 5 * Math.cos(spaceship.direction);
         this.yVelocity = 5 * Math.sin(spaceship.direction);
         this.age = 0;
         this.markedForDeletion = false;
-        this.bulletLifetime = 1500;
+        this.bulletLifetime = 2000;
     }
     checkCollision() {
         this.game.asteroids.forEach(asteroid => {
