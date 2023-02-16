@@ -1,14 +1,16 @@
 class Asteroid {
     constructor(game) {
         this.game = game;
-        this.xPos = 300;
-        this.yPos = 300;
-        this.xVelocity = 1;
-        this.yVelocity = 1;
+        this.xPos = Math.floor(Math.random() * 600);
+        this.yPos = Math.floor(Math.random() * 600);
+        this.direction = Math.random() * 2 * Math.PI;
+        this.xVelocity = Math.cos(this.direction);
+        this.yVelocity = Math.sin(this.direction);
+        this.markedForDeletion = false;
     }
-    update(timeDelta) {
-        this.xPos += this.xVelocity;
-        this.yPos += this.yVelocity;
+    update() {
+        this.xPos += this.xVelocity * this.speed;
+        this.yPos += this.yVelocity * this.speed;
 
         // Wrap around the x-axis
         if (this.xPos < -this.radius / 2) {
@@ -27,7 +29,6 @@ class Asteroid {
     draw(context) {
         context.beginPath();
         context.arc(this.xPos, this.yPos, this.radius, 0, Math.PI * 2, true);
-        context.strokeStyle = 'white';
         context.stroke();
     }
 }
@@ -35,14 +36,20 @@ class Asteroid {
 export class BigAsteroid extends Asteroid {
     constructor(game) {
         super(game);
-        this.radius = 50;
+        this.radius = 60;
+        this.speed = 1;
+    }
+    explode() {
+        this.game.asteroids.push(new MediumAsteroid(this.game));
+        this.game.asteroids.push(new MediumAsteroid(this.game));
     }
 }
 
 export class MediumAsteroid extends Asteroid {
     constructor(game) {
         super(game);
-        this.radius = 25;
+        this.radius = 30;
+        this.speed = 1.5;
     }
 }
 
@@ -50,5 +57,6 @@ export class SmallAsteroid extends Asteroid {
     constructor(game) {
         super(game);
         this.radius = 10;
+        this.speed = 2;
     }
 }
