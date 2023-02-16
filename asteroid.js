@@ -1,7 +1,10 @@
-
 class Asteroid {
     constructor(game) {
-
+        this.game = game;
+        this.xPos = 0;
+        this.yPos = 0;
+        this.xVelocity = 0;
+        this.yVelocity = 0;
     }
     update(timeDelta) {
 
