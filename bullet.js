@@ -1,3 +1,4 @@
+import { pointCircleCollision } from "./collisiondetection.js";
 export default class Bullet {
     constructor(spaceship) {
         this.game = spaceship.game;
@@ -13,15 +14,11 @@ export default class Bullet {
     }
     checkCollision() {
         this.game.asteroids.forEach(asteroid => {
-            const distanceX = (this.xPos + 2) - asteroid.xPos;
-            const distanceY = (this.yPos + 2) - asteroid.yPos;
-            const distance = Math.sqrt(distanceX**2 + distanceY**2);
-
-            if (distance < asteroid.radius + 2) {
+            if (pointCircleCollision(this.xPos + 2, this.yPos + 2, asteroid.xPos, asteroid.yPos, asteroid.radius + 2)) {
                 asteroid.explode();
                 this.markedForDeletion = true;
             }
-        })
+        });
     }
     update(timeDelta) {
         this.age += timeDelta;
