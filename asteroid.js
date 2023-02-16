@@ -1,5 +1,7 @@
 class Asteroid {
     constructor(asteroid) {
+        // game, xPos, and yPos will be undefined if the asteroid is created
+        // by the spawnAsteroids method from the game class.
         this.game = asteroid.game || asteroid;
         this.xPos = asteroid.xPos || Math.floor(Math.random() * this.game.screenWidth);
         this.yPos = asteroid.yPos || Math.floor(Math.random() * this.game.screenHeight);

@@ -2,8 +2,8 @@ import Bullet from "./bullet.js";
 export default class SpaceShip {
     constructor(game) {
         this.game = game;
-        this.width = 10;
-        this.height = 30;
+        this.width = 15;
+        this.height = 40;
         this.xPos = (game.screenWidth / 2) - (this.width / 2);
         this.yPos = (game.screenHeight / 2) - (this.height / 2);
         this.direction = 3/2 * Math.PI;
@@ -13,6 +13,9 @@ export default class SpaceShip {
         this.forwardSpeed = 2;
         this.bullets = [];
         this.laserCooldown = 0;
+    }
+    checkCollision() {
+
     }
     shoot() {
         if (this.laserCooldown === 0) {
