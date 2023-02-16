@@ -65,7 +65,6 @@ export default class SpaceShip {
 
         }
         draw(context) {
-
         context.save(); // save the current transformation matrix
 
         context.translate(this.xPos, this.yPos); // move to the center of the triangle
@@ -75,8 +74,6 @@ export default class SpaceShip {
         context.lineTo(-(this.height / 2), this.width);
         context.lineTo(-(this.height / 2), -(this.width));
         context.lineTo(this.height / 2, 0);
-        context.lineWidth = 1;
-        context.strokeStyle = 'white';
         context.stroke();
 
         context.restore(); // restore the previous transformation matrix

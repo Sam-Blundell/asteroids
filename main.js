@@ -5,13 +5,12 @@ window.addEventListener('load', () => {
     const context = gameScreen.getContext('2d');
     gameScreen.height = 600;
     gameScreen.width = 600;
+    context.strokeStyle = 'white';
+    context.lineWidth = 1;
     const game = new Game(gameScreen.height, gameScreen.width);
 
     let lastTimeStamp = 0;
     const animate = (timeStamp) => {
-        context.fillStyle = 'black';
-        context.fillRect(0, 0, gameScreen.height, gameScreen.width);
-        context.fillStyle = 'white';
         const timeDelta = timeStamp - lastTimeStamp;
         lastTimeStamp = timeStamp;
         game.update(timeDelta);
