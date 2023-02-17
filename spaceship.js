@@ -1,4 +1,5 @@
 import Bullet from "./bullet.js";
+import { ShipSounds } from "./soundmanager.js";
 export default class SpaceShip {
     constructor(game) {
         this.game = game;
@@ -13,14 +14,14 @@ export default class SpaceShip {
         this.forwardSpeed = 2;
         this.bullets = [];
         this.laserCooldown = 0;
-    }
-    checkCollision() {
-
+        this.laserChargeTime = 40;
+        this.shipSounds = new ShipSounds();
     }
     shoot() {
         if (this.laserCooldown === 0) {
             this.bullets.push(new Bullet(this));
-            this.laserCooldown = 100;
+            this.shipSounds.play('laser');
+            this.laserCooldown = this.laserChargeTime;
         }
     }
     update(timeDelta, input) {
