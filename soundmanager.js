@@ -25,3 +25,12 @@ export class ShipSounds extends SoundManager {
         this.load('laser', './audiosamples/laser.wav')
     }
 }
+
+export class AsteroidSounds extends SoundManager {
+    constructor() {
+        super();
+        this.load('bigExplosion', './audiosamples/bigExplosion.wav');
+        this.load('mediumExplosion', './audiosamples/mediumExplosion.wav');
+        this.load('smallExplosion', './audiosamples/smallExplosion.wav');
+    }
+}
