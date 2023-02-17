@@ -1,6 +1,7 @@
 import InputHandler from './inputHandler.js';
 import SpaceShip from './spaceship.js';
 import { BigAsteroid } from './asteroid.js';
+import { AsteroidSounds } from './soundmanager.js';
 
 export default class Game {
     constructor(height, width) {
@@ -9,6 +10,7 @@ export default class Game {
         this.input = new InputHandler(this);
         this.spaceShip = new SpaceShip(this);
         this.asteroids = [];
+        this.asteroidSounds = new AsteroidSounds();
     }
     spawnAsteroids(asteroidCount) {
         for (let i = 0; i < asteroidCount; i++) {

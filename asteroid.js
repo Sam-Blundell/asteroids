@@ -12,6 +12,7 @@ class Asteroid {
     }
     explode() {
         this.markedForDeletion = true;
+        this.game.asteroidSounds.play(this.explosionType);
     }
     update() {
         this.xPos += this.xVelocity * this.speed;
@@ -43,6 +44,7 @@ export class BigAsteroid extends Asteroid {
         super(asteroid);
         this.radius = 60;
         this.speed = 1;
+        this.explosionType = 'bigExplosion';
     }
     explode() {
         super.explode();
@@ -56,6 +58,7 @@ export class MediumAsteroid extends Asteroid {
         super(asteroid);
         this.radius = 30;
         this.speed = 1.5;
+        this.explosionType = 'mediumExplosion';
     }
     explode() {
         super.explode();
@@ -69,5 +72,6 @@ export class SmallAsteroid extends Asteroid {
         super(asteroid);
         this.radius = 15 ;
         this.speed = 2;
+        this.explosionType = 'smallExplosion';
     }
 }
