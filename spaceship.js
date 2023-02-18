@@ -1,6 +1,7 @@
 import Bullet from "./bullet.js";
 import { Coordinates } from "./collisiondetection.js";
 import { ShipSounds } from "./soundmanager.js";
+import { wrapPosition } from "./helperFunctions.js";
 export default class SpaceShip {
     constructor(game) {
         this.game = game;
@@ -45,20 +46,8 @@ export default class SpaceShip {
         }
         this.coordinate.x += this.xVelocity;
         this.coordinate.y += this.yVelocity;
-
-        // Wrap around the x-axis
-        if (this.coordinate.x < -this.width / 2) {
-            this.coordinate.x = this.game.screenWidth + this.width / 2;
-        } else if (this.coordinate.x > this.game.screenWidth + this.width / 2) {
-            this.coordinate.x = -this.width / 2;
-        }
-
-        // Wrap around the y-axis
-        if (this.coordinate.y < -this.height / 2) {
-            this.coordinate.y = this.game.screenHeight + this.height / 2;
-        } else if (this.coordinate.y > this.game.screenHeight + this.height / 2) {
-            this.coordinate.y = -this.height / 2;
-        }
+        // wrap around when moving beyond the edge of the screen.
+        wrapPosition(this.game.screenWidth, this.game.screenHeight, this.coordinate, this.width, this.height);
 
         // turning the ship
         if (input.has('ArrowRight')) {

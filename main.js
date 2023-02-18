@@ -10,7 +10,6 @@
 //  Add lives system.
 //  Add UI.
 //  Add score system.
-//  refactor boundary crossing code to be reusable.
 //  look into web audio api instead of audio tag.
 
 

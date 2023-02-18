@@ -1,12 +1,13 @@
 import { Coordinates } from "./collisiondetection.js";
+import { wrapPosition } from "./helperFunctions.js";
 class Asteroid {
     constructor(asteroid) {
         // game, xPos, and yPos will be undefined if the asteroid is created
         // by the spawnAsteroids method from the game class.
         this.game = asteroid.game || asteroid;
-        this.coordinates = new Coordinates(
-            asteroid.coordinates?.x || Math.floor(Math.random() * this.game.screenWidth),
-            asteroid.coordinates?.y || Math.floor(Math.random() * this.game.screenHeight),
+        this.coordinate = new Coordinates(
+            asteroid.coordinate?.x || Math.floor(Math.random() * this.game.screenWidth),
+            asteroid.coordinate?.y || Math.floor(Math.random() * this.game.screenHeight),
         );
         this.direction = Math.random() * 2 * Math.PI;
         this.xVelocity = Math.cos(this.direction);
@@ -18,25 +19,13 @@ class Asteroid {
         this.game.asteroidSounds.play(this.explosionType);
     }
     update() {
-        this.coordinates.x += this.xVelocity * this.speed;
-        this.coordinates.y += this.yVelocity * this.speed;
-
-        if (this.coordinates.x < -this.radius / 2) {
-            this.coordinates.x = this.game.screenWidth + this.radius / 2;
-        } else if (this.coordinates.x > this.game.screenWidth + this.radius / 2) {
-            this.coordinates.x = -this.radius / 2;
-        }
-
-        // Wrap around the y-axis
-        if (this.coordinates.y < -this.radius / 2) {
-            this.coordinates.y = this.game.screenHeight + this.radius / 2;
-        } else if (this.coordinates.y > this.game.screenHeight + this.radius / 2) {
-            this.coordinates.y = -this.radius / 2;
-        }
+        this.coordinate.x += this.xVelocity * this.speed;
+        this.coordinate.y += this.yVelocity * this.speed;
+        wrapPosition(this.game.screenWidth, this.game.screenHeight, this.coordinate, this.radius);
     }
     draw(context) {
         context.beginPath();
-        context.arc(this.coordinates.x, this.coordinates.y, this.radius, 0, Math.PI * 2, true);
+        context.arc(this.coordinate.x, this.coordinate.y, this.radius, 0, Math.PI * 2, true);
         context.stroke();
     }
 }
