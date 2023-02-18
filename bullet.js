@@ -1,11 +1,13 @@
-import { pointCircleCollision } from "./collisiondetection.js";
+import { Coordinates, pointCircleCollision } from "./collisiondetection.js";
 export default class Bullet {
     constructor(spaceship) {
         this.game = spaceship.game;
         this.spaceship = spaceship;
         this.size = 4;
-        this.xPos = spaceship.xPos + (Math.cos(spaceship.direction) * (spaceship.height / 2));
-        this.yPos = spaceship.yPos + (Math.sin(spaceship.direction) * (spaceship.height / 2));
+        this.coordinates = new Coordinates(
+            spaceship.xPos + (Math.cos(spaceship.direction) * (spaceship.height / 2)) + 2,
+            spaceship.yPos + (Math.sin(spaceship.direction) * (spaceship.height / 2)) + 2,
+        );
         this.xVelocity = 5 * Math.cos(spaceship.direction);
         this.yVelocity = 5 * Math.sin(spaceship.direction);
         this.age = 0;
@@ -14,7 +16,7 @@ export default class Bullet {
     }
     checkCollision() {
         this.game.asteroids.forEach(asteroid => {
-            if (pointCircleCollision(this.xPos + 2, this.yPos + 2, asteroid.xPos, asteroid.yPos, asteroid.radius + 2)) {
+            if (pointCircleCollision(this.coordinates, asteroid.coordinates, asteroid.radius + 2)) {
                 asteroid.explode();
                 this.markedForDeletion = true;
             }
@@ -23,25 +25,25 @@ export default class Bullet {
     update(timeDelta) {
         this.age += timeDelta;
         if (this.age > this.bulletLifetime) this.markedForDeletion = true;
-        this.xPos += this.xVelocity;
-        this.yPos += this.yVelocity;
+        this.coordinates.x += this.xVelocity;
+        this.coordinates.y += this.yVelocity;
 
         // Wrap around the x-axis
-        if (this.xPos < -this.size / 2) {
-            this.xPos = this.game.screenWidth + this.size / 2;
-        } else if (this.xPos > this.game.screenWidth + this.size / 2) {
-            this.xPos = -this.size / 2;
+        if (this.coordinates.x < -this.size / 2) {
+            this.coordinates.x = this.game.screenWidth + this.size / 2;
+        } else if (this.coordinates.x > this.game.screenWidth + this.size / 2) {
+            this.coordinates.x = -this.size / 2;
         }
 
         // Wrap around the y-axis
-        if (this.yPos < -this.size / 2) {
-            this.yPos = this.game.screenHeight + this.size / 2;
-        } else if (this.yPos > this.game.screenHeight + this.size / 2) {
-            this.yPos = -this.size / 2;
+        if (this.coordinates.y < -this.size / 2) {
+            this.coordinates.y = this.game.screenHeight + this.size / 2;
+        } else if (this.coordinates.y > this.game.screenHeight + this.size / 2) {
+            this.coordinates.y = -this.size / 2;
         }
         this.checkCollision();
     }
     draw(context) {
-        context.fillRect(this.xPos, this.yPos, this.size, this.size);
+        context.fillRect(this.coordinates.x, this.coordinates.y, this.size, this.size);
     }
 }
