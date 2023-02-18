@@ -2,9 +2,10 @@ class SoundManager {
     constructor() {
         this.sounds = {};
     }
-    load(name, path) {
+    load(name, path, loop) {
         const audio = new Audio(path);
         audio.preload = 'auto';
+        if (loop) audio.loop = true;
         audio.addEventListener('error', (event) => {
             console.error(`Error loading audio file ${path}: ${event}`);
         })
@@ -22,7 +23,22 @@ class SoundManager {
 export class ShipSounds extends SoundManager {
     constructor() {
         super();
-        this.load('laser', './audiosamples/laser.wav')
+        this.load('laser', './audiosamples/laser.wav');
+        this.load('thrusters', './audiosamples/thrusters.wav', true);
+        this.playingThrusters = false;
+    }
+    playThrusters() {
+        if (!this.playingThrusters) {
+            this.sounds['thrusters'].currentTime = 0;
+            this.sounds['thrusters'].play();
+            this.playingThrusters = true;
+        }
+    }
+    stopThrusters() {
+        if (this.playingThrusters) {
+            this.sounds['thrusters'].pause();
+            this.playingThrusters = false;
+        }
     }
 }
 

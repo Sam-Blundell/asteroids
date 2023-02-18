@@ -11,7 +11,6 @@
 //  Add lives system.
 //  Add UI.
 //  Add score system.
-//  Add sound.
 
 
 import Game from './game.js';

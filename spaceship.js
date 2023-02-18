@@ -3,33 +3,34 @@ import { ShipSounds } from "./soundmanager.js";
 export default class SpaceShip {
     constructor(game) {
         this.game = game;
-        this.width = 15;
+        this.width = 25;
         this.height = 40;
-        this.xPos = (game.screenWidth / 2) - (this.width / 2);
-        this.yPos = (game.screenHeight / 2) - (this.height / 2);
+        this.xPos = (game.screenWidth / 2);
+        this.yPos = (game.screenHeight / 2);
         this.direction = 3/2 * Math.PI;
         this.turnSpeed = 2 * Math.PI / 120;
         this.xVelocity = 0;
         this.yVelocity = 0;
         this.forwardSpeed = 2;
         this.bullets = [];
-        this.laserCooldown = 0;
-        this.laserChargeTime = 40;
+        this.firing = false;
         this.shipSounds = new ShipSounds();
     }
     shoot() {
-        if (this.laserCooldown === 0) {
+        if (!this.firing) {
             this.bullets.push(new Bullet(this));
             this.shipSounds.play('laser');
-            this.laserCooldown = this.laserChargeTime;
+            this.firing = true;
         }
     }
     update(timeDelta, input) {
         // move the ship in the direction it's facing
         if (input.has('ArrowUp')) {
+            this.shipSounds.playThrusters();
             this.xVelocity = this.forwardSpeed * Math.cos(this.direction);
             this.yVelocity = this.forwardSpeed * Math.sin(this.direction);
         } else {
+            this.shipSounds.stopThrusters();
             this.xVelocity = 0;
             this.yVelocity = 0;
         }
@@ -59,8 +60,10 @@ export default class SpaceShip {
         }
 
         // firing laser
-        if (input.has('Space') && this.bullets.length < 3) {
+        if (input.has('Space')) {
             this.shoot();
+        } else {
+            this.firing = false;
         }
 
         this.laserCooldown = this.laserCooldown < 0 ? 0 : this.laserCooldown - timeDelta;
@@ -75,8 +78,8 @@ export default class SpaceShip {
         context.rotate(this.direction); // rotate the triangle
         context.beginPath();
         context.moveTo(this.height / 2, 0);
-        context.lineTo(-(this.height / 2), this.width);
-        context.lineTo(-(this.height / 2), -(this.width));
+        context.lineTo(-(this.height / 2), this.width / 2);
+        context.quadraticCurveTo(-5, 0, -(this.height / 2), -(this.width / 2));
         context.lineTo(this.height / 2, 0);
         context.stroke();
 
