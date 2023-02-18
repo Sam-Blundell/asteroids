@@ -11,6 +11,7 @@
 //  Add lives system.
 //  Add UI.
 //  Add score system.
+// refactor boundary crossing code to be reusable.
 
 
 import Game from './game.js';
@@ -34,3 +35,11 @@ window.addEventListener('load', () => {
     }
     animate(0);
 })
+
+// Thoughts:
+// I'm doing a lot of polling booleans or checking if values are contained
+// in arrays on every update. Feels stupid. Maybe event emitters and consumers
+// would be an alternative?
+//
+// Maybe a lot of these entities should be extensions of a basic "space object"
+// class.
