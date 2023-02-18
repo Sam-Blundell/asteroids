@@ -1,5 +1,6 @@
 import { Coordinates } from "./collisiondetection.js";
 import { wrapPosition } from "./helperFunctions.js";
+import { Debris } from "./particle.js";
 class Asteroid {
     constructor(asteroid) {
         // game, xPos, and yPos will be undefined if the asteroid is created
@@ -17,6 +18,9 @@ class Asteroid {
     explode() {
         this.markedForDeletion = true;
         this.game.asteroidSounds.play(this.explosionType);
+        for (let i = 0; i < this.radius; i++) {
+            this.game.debris.push(new Debris(this.game, this));
+        }
     }
     update() {
         this.coordinate.x += this.xVelocity * this.speed;

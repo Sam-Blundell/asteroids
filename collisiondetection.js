@@ -81,4 +81,4 @@ const trianglePointCollision = (aX, aY, bX, bY, cX, cY, pX, pY) => {
 //     const halfBaseLength = getLineLength(aX, aY, cX, cY) / 2;
 // }
 
-export { Coordinates, pointCircleCollision, circleLineCollision, trianglePointCollision};
+export { Coordinates, pointCircleCollision, };

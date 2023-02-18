@@ -11,6 +11,7 @@ export default class Game {
         this.spaceShip = new SpaceShip(this);
         this.asteroids = [];
         this.asteroidSounds = new AsteroidSounds();
+        this.debris = [];
     }
     spawnAsteroids(asteroidCount) {
         for (let i = 0; i < asteroidCount; i++) {
@@ -24,6 +25,8 @@ export default class Game {
         if (this.asteroids.length === 0) {
             this.spawnAsteroids(4);
         }
+        this.debris = this.debris.filter(debris => debris.markedForDeletion === false);
+        this.debris.forEach(debris => debris.update(timeDelta));
     }
     draw(context) {
         context.fillStyle = 'black';
@@ -31,5 +34,6 @@ export default class Game {
         context.fillStyle = 'white';
         this.spaceShip.draw(context);
         this.asteroids.forEach(asteroid => asteroid.draw(context));
+        this.debris.forEach(debris => debris.draw(context));
     }
 }

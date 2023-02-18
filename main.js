@@ -2,7 +2,6 @@
 // TODO:
 //  Add collision detection between ship and asteroids.
 //  Make sure asteroids can't spawn on top of the ship.
-//  Add particle effect when asteroids explode.
 //  Use a static asset for asteroids rather than drawing them.
 //  Add engine animation when ship is accellerating.
 //  Add explode method for ship.
@@ -11,6 +10,7 @@
 //  Add UI.
 //  Add score system.
 //  look into web audio api instead of audio tag.
+//  Ship should be able to enter hyperspace
 
 
 import Game from './game.js';
