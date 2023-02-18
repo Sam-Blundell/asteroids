@@ -1,10 +1,13 @@
+import { Coordinates } from "./collisiondetection.js";
 class Asteroid {
     constructor(asteroid) {
         // game, xPos, and yPos will be undefined if the asteroid is created
         // by the spawnAsteroids method from the game class.
         this.game = asteroid.game || asteroid;
-        this.xPos = asteroid.xPos || Math.floor(Math.random() * this.game.screenWidth);
-        this.yPos = asteroid.yPos || Math.floor(Math.random() * this.game.screenHeight);
+        this.coordinates = new Coordinates(
+            asteroid.coordinates?.x || Math.floor(Math.random() * this.game.screenWidth),
+            asteroid.coordinates?.y || Math.floor(Math.random() * this.game.screenHeight),
+        );
         this.direction = Math.random() * 2 * Math.PI;
         this.xVelocity = Math.cos(this.direction);
         this.yVelocity = Math.sin(this.direction);
@@ -15,26 +18,25 @@ class Asteroid {
         this.game.asteroidSounds.play(this.explosionType);
     }
     update() {
-        this.xPos += this.xVelocity * this.speed;
-        this.yPos += this.yVelocity * this.speed;
+        this.coordinates.x += this.xVelocity * this.speed;
+        this.coordinates.y += this.yVelocity * this.speed;
 
-        // Wrap around the x-axis
-        if (this.xPos < -this.radius / 2) {
-            this.xPos = this.game.screenWidth + this.radius / 2;
-        } else if (this.xPos > this.game.screenWidth + this.radius / 2) {
-            this.xPos = -this.radius / 2;
+        if (this.coordinates.x < -this.radius / 2) {
+            this.coordinates.x = this.game.screenWidth + this.radius / 2;
+        } else if (this.coordinates.x > this.game.screenWidth + this.radius / 2) {
+            this.coordinates.x = -this.radius / 2;
         }
 
         // Wrap around the y-axis
-        if (this.yPos < -this.radius / 2) {
-            this.yPos = this.game.screenHeight + this.radius / 2;
-        } else if (this.yPos > this.game.screenHeight + this.radius / 2) {
-            this.yPos = -this.radius / 2;
+        if (this.coordinates.y < -this.radius / 2) {
+            this.coordinates.y = this.game.screenHeight + this.radius / 2;
+        } else if (this.coordinates.y > this.game.screenHeight + this.radius / 2) {
+            this.coordinates.y = -this.radius / 2;
         }
     }
     draw(context) {
         context.beginPath();
-        context.arc(this.xPos, this.yPos, this.radius, 0, Math.PI * 2, true);
+        context.arc(this.coordinates.x, this.coordinates.y, this.radius, 0, Math.PI * 2, true);
         context.stroke();
     }
 }
