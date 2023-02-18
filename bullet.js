@@ -5,8 +5,10 @@ export default class Bullet {
         this.spaceship = spaceship;
         this.size = 4;
         this.coordinates = new Coordinates(
-            spaceship.xPos + (Math.cos(spaceship.direction) * (spaceship.height / 2)) + 2,
-            spaceship.yPos + (Math.sin(spaceship.direction) * (spaceship.height / 2)) + 2,
+            // no idea why the -2 is needed here. Without it the bullets are just slightly off
+            // centre when they emerge from the ship.
+            spaceship.coordinate.x + (Math.cos(spaceship.direction) * (spaceship.height / 2) - 2),
+            spaceship.coordinate.y + (Math.sin(spaceship.direction) * (spaceship.height / 2) - 2),
         );
         this.xVelocity = 5 * Math.cos(spaceship.direction);
         this.yVelocity = 5 * Math.sin(spaceship.direction);

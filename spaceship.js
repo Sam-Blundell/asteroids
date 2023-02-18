@@ -1,12 +1,12 @@
 import Bullet from "./bullet.js";
+import { Coordinates } from "./collisiondetection.js";
 import { ShipSounds } from "./soundmanager.js";
 export default class SpaceShip {
     constructor(game) {
         this.game = game;
         this.width = 25;
         this.height = 40;
-        this.xPos = (game.screenWidth / 2);
-        this.yPos = (game.screenHeight / 2);
+        this.coordinate = new Coordinates(game.screenWidth / 2, game.screenHeight / 2);
         this.direction = 3/2 * Math.PI;
         this.turnSpeed = 2 * Math.PI / 120;
         this.xVelocity = 0;
@@ -43,21 +43,21 @@ export default class SpaceShip {
             this.xVelocity = Math.abs(this.xVelocity) < 0.1 ? 0 : this.xVelocity / this.drag;
             this.yVelocity = Math.abs(this.yVelocity) < 0.1 ? 0 : this.yVelocity / this.drag;
         }
-        this.xPos += this.xVelocity;
-        this.yPos += this.yVelocity;
+        this.coordinate.x += this.xVelocity;
+        this.coordinate.y += this.yVelocity;
 
         // Wrap around the x-axis
-        if (this.xPos < -this.width / 2) {
-            this.xPos = this.game.screenWidth + this.width / 2;
-        } else if (this.xPos > this.game.screenWidth + this.width / 2) {
-            this.xPos = -this.width / 2;
+        if (this.coordinate.x < -this.width / 2) {
+            this.coordinate.x = this.game.screenWidth + this.width / 2;
+        } else if (this.coordinate.x > this.game.screenWidth + this.width / 2) {
+            this.coordinate.x = -this.width / 2;
         }
 
         // Wrap around the y-axis
-        if (this.yPos < -this.height / 2) {
-            this.yPos = this.game.screenHeight + this.height / 2;
-        } else if (this.yPos > this.game.screenHeight + this.height / 2) {
-            this.yPos = -this.height / 2;
+        if (this.coordinate.y < -this.height / 2) {
+            this.coordinate.y = this.game.screenHeight + this.height / 2;
+        } else if (this.coordinate.y > this.game.screenHeight + this.height / 2) {
+            this.coordinate.y = -this.height / 2;
         }
 
         // turning the ship
@@ -82,7 +82,7 @@ export default class SpaceShip {
         draw(context) {
         context.save(); // save the current transformation matrix
 
-        context.translate(this.xPos, this.yPos); // move to the center of the triangle
+        context.translate(this.coordinate.x, this.coordinate.y); // move to the center of the triangle
         context.rotate(this.direction); // rotate the triangle
         context.beginPath();
         context.moveTo(this.height / 2, 0);
