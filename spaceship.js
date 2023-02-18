@@ -11,7 +11,9 @@ export default class SpaceShip {
         this.turnSpeed = 2 * Math.PI / 120;
         this.xVelocity = 0;
         this.yVelocity = 0;
-        this.forwardSpeed = 2;
+        this.thrustPower = 0.1;
+        this.maxSpeed = 10;
+        this.drag = 1.01; // Space has friction, don't worry about it.
         this.bullets = [];
         this.firing = false;
         this.shipSounds = new ShipSounds();
@@ -27,12 +29,19 @@ export default class SpaceShip {
         // move the ship in the direction it's facing
         if (input.has('ArrowUp')) {
             this.shipSounds.playThrusters();
-            this.xVelocity = this.forwardSpeed * Math.cos(this.direction);
-            this.yVelocity = this.forwardSpeed * Math.sin(this.direction);
+            this.xVelocity += this.thrustPower * Math.cos(this.direction);
+            this.yVelocity += this.thrustPower * Math.sin(this.direction);
+            // limit speed
+            const speed = Math.sqrt(this.xVelocity ** 2 + this.yVelocity ** 2);
+            if (speed > this.maxSpeed) {
+                const scaleFactor = this.maxSpeed / speed;
+                this.xVelocity *= scaleFactor;
+                this.yVelocity *= scaleFactor;
+            }
         } else {
             this.shipSounds.stopThrusters();
-            this.xVelocity = 0;
-            this.yVelocity = 0;
+            this.xVelocity = Math.abs(this.xVelocity) < 0.1 ? 0 : this.xVelocity / this.drag;
+            this.yVelocity = Math.abs(this.yVelocity) < 0.1 ? 0 : this.yVelocity / this.drag;
         }
         this.xPos += this.xVelocity;
         this.yPos += this.yVelocity;
@@ -66,11 +75,10 @@ export default class SpaceShip {
             this.firing = false;
         }
 
-        this.laserCooldown = this.laserCooldown < 0 ? 0 : this.laserCooldown - timeDelta;
         this.bullets = this.bullets.filter(bullet => bullet.markedForDeletion === false);
         this.bullets.forEach(bullet => bullet.update(timeDelta));
 
-        }
+    }
         draw(context) {
         context.save(); // save the current transformation matrix
 

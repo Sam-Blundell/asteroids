@@ -1,6 +1,5 @@
 
 // TODO:
-//  Improve ship handling with gradual accelleration and drift.
 //  Add collision detection between ship and asteroids.
 //  Make sure asteroids can't spawn on top of the ship.
 //  Add particle effect when asteroids explode.
@@ -11,7 +10,8 @@
 //  Add lives system.
 //  Add UI.
 //  Add score system.
-// refactor boundary crossing code to be reusable.
+//  refactor boundary crossing code to be reusable.
+//  look into web audio api instead of audio tag.
 
 
 import Game from './game.js';
