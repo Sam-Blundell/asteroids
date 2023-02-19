@@ -1,5 +1,5 @@
 import Bullet from "./bullet.js";
-import { Coordinates } from "./collisiondetection.js";
+import { Coordinates, polygonCircleCollision } from "./collisiondetection.js";
 import { ShipSounds } from "./soundmanager.js";
 import { wrapPosition } from "./helperFunctions.js";
 export default class SpaceShip {
@@ -25,6 +25,36 @@ export default class SpaceShip {
             this.shipSounds.play('laser');
             this.firing = true;
         }
+    }
+    getShipVertices() {
+        // get starting upright vertices
+        let front = new Coordinates(
+            this.coordinate.x,
+            this.coordinate.y + (this.height / 2),
+        );
+        let left = new Coordinates(
+            this.coordinate.x - (this.width / 2),
+            this.coordinate.y - (this.height / 2),
+        );
+        let right = new Coordinates(
+            this.coordinate.x + (this.width / 2),
+            this.coordinate.y - (this.height / 2),
+        );
+
+        // translate to the origin, rotate to the direction, translate back into place.
+        front = front.subtract(this.coordinate).rotate(this.direction).add(this.coordinate);
+        left = left.subtract(this.coordinate).rotate(this.direction).add(this.coordinate);
+        right = right.subtract(this.coordinate).rotate(this.direction).add(this.coordinate);
+
+        return [front, left, right];
+    }
+    checkCollision() {
+        this.game.asteroids.forEach(asteroid => {
+            if (polygonCircleCollision(this.getShipVertices(), asteroid.coordinate, asteroid.radius)) {
+                // asteroid.explode();
+                console.log('colliding');
+            }
+        });
     }
     update(timeDelta, input) {
         // move the ship in the direction it's facing
@@ -66,7 +96,7 @@ export default class SpaceShip {
 
         this.bullets = this.bullets.filter(bullet => bullet.markedForDeletion === false);
         this.bullets.forEach(bullet => bullet.update(timeDelta));
-
+        this.checkCollision();
     }
         draw(context) {
         context.save(); // save the current transformation matrix
@@ -76,7 +106,7 @@ export default class SpaceShip {
         context.beginPath();
         context.moveTo(this.height / 2, 0);
         context.lineTo(-(this.height / 2), this.width / 2);
-        context.quadraticCurveTo(-5, 0, -(this.height / 2), -(this.width / 2));
+        context.lineTo(-(this.height / 2), -(this.width / 2));
         context.lineTo(this.height / 2, 0);
         context.stroke();
 

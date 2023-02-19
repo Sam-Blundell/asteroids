@@ -6,6 +6,15 @@ class Coordinates {
     add(p) {
         return new Coordinates(this.x + p.x, this.y + p.y);
     }
+    subtract(p) {
+        return new Coordinates(this.x - p.x, this.y - p.y);
+    }
+    rotate(angle) {
+        return new Coordinates(
+            (Math.cos(angle) * this.x) - (Math.sin(angle) * this.y),
+            (Math.sin(angle) * this.x) + (Math.cos(angle) * this.y),
+        )
+    }
 }
 
 // Use Pythagoras theorem to return the length of the distance between
