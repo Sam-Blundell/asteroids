@@ -42,3 +42,14 @@ window.addEventListener('load', () => {
 //
 // Maybe a lot of these entities should be extensions of a basic "space object"
 // class.
+//
+// What the hell are matrix transformations?
+//
+// Look into "squared euclidean distance" calculation as a possible alternative
+// to the normal pythagoras method of finding distances between points. It
+// might be more computationally efficient.
+//
+// It would be really nice to be able to do operator overloading so I can add
+// two point classes together without needing to use my add() method.
+//
+// Do some reading on the jordan curve theorem

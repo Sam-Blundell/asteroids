@@ -3,82 +3,113 @@ class Coordinates {
         this.x = x;
         this.y = y;
     }
+    add(p) {
+        return new Coordinates(this.x + p.x, this.y + p.y);
+    }
 }
 
-// Pythagoras
+// Use Pythagoras theorem to return the length of the distance between
+// one point (pA) and another point (pB).
 const getLineLength = (pA, pB) => {
     return Math.sqrt((pA.x - pB.x)**2 + (pA.y - pB.y)**2);
 }
 
 // Checks whether the distance from the point to the centre of the circle is
 // less than the radius of the circle.
-const pointCircleCollision = (pA, cA, circleRad) => {
-    return (getLineLength(pA, cA) < circleRad);
+const pointCircleCollision = (p, c, circleRad) => {
+    return (getLineLength(p, c) < circleRad);
 }
 
-const linePointCollision = (aX, aY, bX, bY, pointX, pointY) => {
-    const lineLength = getLineLength(aX, aY, bX, bY);
-    // distance from start point of line to point p.
-    const dA = getLineLength(aX, aY, pointX, pointY);
-    // distance from end point of line to point p.
-    const dB = getLineLength(bX, bY, pointX, pointY);
-    // Accuracy tolerance for line-point intersection. Without this the point
-    // needs to be absolutely perfectly intersecting the line which can be buggy.
-    const tolerance = 0.1
-    // if the combined distances are the same as the line length (within tolerance)
-    // then the point is intersecting the line.
-    return (dA + dB) >= (lineLength - tolerance) && ((dA + dB) <= (lineLength + tolerance));
+// Measures the distance between one end of the line (1A) and the point (p).
+// Measures the distance between the other end of the line (1B) and the point (p).
+// If the sum of those two distances is the same as the length of the line
+// then the point is on the line.
+const linePointCollision = (lA, lB, p) => {
+    const lineLength = getLineLength(lA, lB);
+    const distance1 = getLineLength(lA, p);
+    const distance2 = getLineLength(lB, p);
+
+    // Tolerance value is necessary since the value is rarely exactly the same at
+    // a particular moment in time.
+    const tolerance = 0.1;
+    if (
+        distance1 + distance2 >= lineLength - tolerance &&
+        distance1 + distance2 <= lineLength + tolerance
+    ) {
+        return true;
+    }
+    return false;
 }
 
-const circleLineCollision = (aX, aY, bX, bY, circleX, circleY, radius) => {
-    // Quick return if either end of the line is inside the circle.
-    const inside1 = pointCircleCollision(x1, y1, circleX, circleY, radius);
-    const inside2 = pointCircleCollision(x2, y2, circleX, circleY, radius);
-    if (inside1 || inside2) return true;
+// finds the closest point on the line to the point.
+// checks that the closest point on the line is part of the
+// line segment that we're examining.
+// Returns true if the distance between the point and the 
+// lines closest point is less than the radius of the circle.
+const lineCircleCollision = (pA, pB, c, circleRad) => {
+    // check if either ends of the line are inside the circle.
+    const pointAInside = pointCircleCollision(pA, c, circleRad);
+    const pointBInside = pointCircleCollision(pB, c, circleRad);
+    if (pointAInside || pointBInside) return true;
 
-    // get length of line
-    const length = getLineLength(x1, y1, x2, y2);
-    // need to understand this part.
-    const dot = ( ((circleX - aX)*(bX - aX)) + ((circleY - aY)*(bY - aY)) ) / length**2;
-    const closestX = aX + (dot * (bX - aX));
-    const closestY = aY + (dot * (bY - aY));
-    const onSegment = linePointCollision(aX, aY, bX, bY, closestX, closestY);
+    const lineLen = getLineLength(pA, pB);
+
+    const dot = ( ((c.x - pA.x)*(pB.x - pA.x)) + ((c.y - pA.y)*(pB.y - pA.y)) ) / lineLen**2;
+
+    const closestX = pA.x + (dot * (pB.x - pA.x));
+    const closestY = pA.y + (dot * (pB.y - pA.y));
+
+    const onSegment = linePointCollision(pA, pB, new Coordinates(closestX, closestY));
     if (!onSegment) return false;
+    
+    const distance = getLineLength(new Coordinates(closestX, c.x), new Coordinates(closestY, c.y));
 
-    const distance = getLineLength(closestX, closestY, circleX, circleY);
-    return distance <= radius;
+    if (distance <= circleRad) {
+        return true;
+    }
+    return false;
 }
 
-const polygonPointCollision = (vertices, pX, pY) => {
-    let collision = false;
-    // Vertices is an array of two-value arrays that each represent a vertex on
-    // our polygon. We need to loop through the array and get each vertex;
-    let next = 0;
-    for (let i = 0; i < vertices.length; i++) {
-        next = next === vertices.length ? 0 : next + 1;
-        let currV = vertices[i];
-        let nextV = vertices[next];
+const polygonPointCollision = (vertices, p) => {
+    const collision = false;
 
-        if (((currV[1] >= pY && nextV[1] < pY) || (currV[1] < pY && nextV[1] >= pY)) &&
-         (pX < (nextV[0] - currV[0])*(pY - currV[1]) / (nextV[1] - currV[1]) + currV[0])) {
+    // loop through vertices of the polygon
+    let next = 0;
+    for (let curr = 0; curr < vertices.length; curr++) {
+        // Get the next vertex in list. If we're finished then wrap around.
+        next = curr + 1;
+        if (next === vertices.length) next = 0;
+
+        const cV = vertices[curr];
+        const nV = vertices[next];
+
+        // compare position, flip 'collision' variable back and forth
+        if (
+            // Jordan Curve Theorem test.
+            ((cV.y >= p.y && nV.y < p.y) || (cV.y < p.y && nV.y >= p.y)) &&
+            (p.x < (nV.x-cV.x)*(p.y-cV.y) / (nV.y-cV.y)+cV.x)
+        ) {
             collision = !collision;
         }
     }
     return collision;
 }
 
-const trianglePointCollision = (aX, aY, bX, bY, cX, cY, pX, pY) => {
-    const triangleArea = Math.abs( (bX - aX)*(cY - aY) - (cX - aX)*(bY - aY) );
-    const area1 = Math.abs( (aX - pX)*(bY - pY) - (bX - pX)*(aY - pY) );
-    const area2 = Math.abs( (bX - pX)*(cY - pY) - (cX - pX)*(bY - pY) );
-    const area3 = Math.abs( (cX - pX)*(aY - pY) - (aX - pX)*(cY - pY) );
+// Carries out lineCircle collision detection on each line
+// of the polygon.
+const polygonCircleCollision = (vertices, circle, circleRadius) => {
 
-    return (area1 + area2 + area3) === triangleArea;
+    for (let i = 0; i < vertices.length; i++) {
+        // next vertex in list, if we're finished then wrap around.
+        const next = (i + 1) % vertices.length;
+
+        const cV = vertices[i];
+        const nV = vertices[next];
+
+        if (lineCircleCollision(cV, nV, circle, circleRadius)) {
+            return true;
+        }
+    }
 }
 
-// const isoscelesTrianglePointCollision = (aX, aY, bX, bY, cX, cY, pX, pY) => {
-//     return false;
-//     const halfBaseLength = getLineLength(aX, aY, cX, cY) / 2;
-// }
-
-export { Coordinates, pointCircleCollision, };
+export { Coordinates, pointCircleCollision, polygonCircleCollision };
