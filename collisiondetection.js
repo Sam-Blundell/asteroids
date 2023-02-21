@@ -26,7 +26,7 @@ const getLineLength = (pA, pB) => {
 // Checks whether the distance from the point to the centre of the circle is
 // less than the radius of the circle.
 const pointCircleCollision = (p, c, circleRad) => {
-    return (getLineLength(p, c) < circleRad);
+    return (getLineLength(p, c) <= circleRad);
 }
 
 // Measures the distance between one end of the line (1A) and the point (p).
@@ -40,7 +40,7 @@ const linePointCollision = (lA, lB, p) => {
 
     // Tolerance value is necessary since the value is rarely exactly the same at
     // a particular moment in time.
-    const tolerance = 0.1;
+    const tolerance = 5;
     if (
         distance1 + distance2 >= lineLength - tolerance &&
         distance1 + distance2 <= lineLength + tolerance
@@ -73,36 +73,36 @@ const lineCircleCollision = (pA, pB, c, circleRad) => {
     
     const distance = getLineLength(new Coordinates(closestX, c.x), new Coordinates(closestY, c.y));
 
-    if (distance <= circleRad) {
+    if (distance <= circleRad - 5) {
         return true;
     }
     return false;
 }
 
-const polygonPointCollision = (vertices, p) => {
-    const collision = false;
+// const polygonPointCollision = (vertices, p) => {
+//     const collision = false;
 
-    // loop through vertices of the polygon
-    let next = 0;
-    for (let curr = 0; curr < vertices.length; curr++) {
-        // Get the next vertex in list. If we're finished then wrap around.
-        next = curr + 1;
-        if (next === vertices.length) next = 0;
+//     // loop through vertices of the polygon
+//     let next = 0;
+//     for (let curr = 0; curr < vertices.length; curr++) {
+//         // Get the next vertex in list. If we're finished then wrap around.
+//         next = curr + 1;
+//         if (next === vertices.length) next = 0;
 
-        const cV = vertices[curr];
-        const nV = vertices[next];
+//         const cV = vertices[curr];
+//         const nV = vertices[next];
 
-        // compare position, flip 'collision' variable back and forth
-        if (
-            // Jordan Curve Theorem test.
-            ((cV.y >= p.y && nV.y < p.y) || (cV.y < p.y && nV.y >= p.y)) &&
-            (p.x < (nV.x-cV.x)*(p.y-cV.y) / (nV.y-cV.y)+cV.x)
-        ) {
-            collision = !collision;
-        }
-    }
-    return collision;
-}
+//         // compare position, flip 'collision' variable back and forth
+//         if (
+//             // Jordan Curve Theorem test.
+//             ((cV.y >= p.y && nV.y < p.y) || (cV.y < p.y && nV.y >= p.y)) &&
+//             (p.x < (nV.x-cV.x)*(p.y-cV.y) / (nV.y-cV.y)+cV.x)
+//         ) {
+//             collision = !collision;
+//         }
+//     }
+//     return collision;
+// }
 
 // Carries out lineCircle collision detection on each line
 // of the polygon.
@@ -119,6 +119,7 @@ const polygonCircleCollision = (vertices, circle, circleRadius) => {
             return true;
         }
     }
+    return false;
 }
 
-export { Coordinates, pointCircleCollision, polygonCircleCollision };
+export { Coordinates, getLineLength, pointCircleCollision, polygonCircleCollision };
