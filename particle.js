@@ -4,7 +4,7 @@ class Particle {
     constructor(game) {
         this.game = game;
         this.age = 0;
-        this.particleLifetime = 1000;
+        this.particleLifetime = (Math.random() * 1000) + 500;
         this.markedForDeletion = false;
     }
     update(timeDelta) {
@@ -23,9 +23,9 @@ export class Debris extends Particle {
         super(game);
         this.size = 1;
         this.coordinate = new Coordinates(asteroid.coordinate.x, asteroid.coordinate.y);
-        const baseSpeed = 0.8;
-        const speedModifier = Math.random() + 0.5; // random number between 0.5 and 1.5
-        this.xVelocity = Math.cos(Math.random() * Math.PI * 2) * baseSpeed * speedModifier;
-        this.yVelocity = Math.sin(Math.random() * Math.PI * 2) * baseSpeed * speedModifier;
+        this.baseSpeed = 0.8;
+        this.speedModifier = Math.random() + 0.5; // random number between 0.5 and 1.5
+        this.xVelocity = Math.cos(Math.random() * Math.PI * 2) * this.baseSpeed * this.speedModifier;
+        this.yVelocity = Math.sin(Math.random() * Math.PI * 2) * this.baseSpeed * this.speedModifier;
     }
 }
