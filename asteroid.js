@@ -37,8 +37,8 @@ class Asteroid {
 export class BigAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
-        this.radius = 60;
-        this.speed = 1;
+        this.radius = 50;
+        this.speed = Math.random() * 0.5 + 1;
         this.explosionType = 'bigExplosion';
     }
     explode() {
@@ -52,7 +52,7 @@ export class MediumAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
         this.radius = 30;
-        this.speed = 1.5;
+        this.speed = Math.random() * 1 + 1;
         this.explosionType = 'mediumExplosion';
     }
     explode() {
@@ -66,7 +66,7 @@ export class SmallAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
         this.radius = 15 ;
-        this.speed = 2;
+        this.speed = Math.random() * 2 + 1.5 ;
         this.explosionType = 'smallExplosion';
     }
 }
