@@ -25,6 +25,7 @@ export class ShipSounds extends SoundManager {
         super();
         this.load('laser', './audiosamples/laser.wav');
         this.load('thrusters', './audiosamples/thrusters.wav', true);
+        this.load('bigExplosion', 'audiosamples/bigExplosion.wav');
         this.playingThrusters = false;
     }
     playThrusters() {
