@@ -1,23 +1,31 @@
 import Bullet from "./bullet.js";
-import { Coordinates, polygonCircleCollision } from "./collisiondetection.js";
+import { Coordinates, getLineLength, polygonCircleCollision } from "./collisiondetection.js";
 import { ShipSounds } from "./soundmanager.js";
 import { wrapPosition } from "./helperFunctions.js";
 export default class SpaceShip {
     constructor(game) {
         this.game = game;
-        this.width = 25;
-        this.height = 40;
+        this.width = 20;
+        this.height = 30;
         this.coordinate = new Coordinates(game.screenWidth / 2, game.screenHeight / 2);
-        this.direction = 3/2 * Math.PI;
+        this.direction = 3/2 * Math.PI; // 270 degrees = facing vertical
         this.turnSpeed = 2 * Math.PI / 120;
         this.xVelocity = 0;
         this.yVelocity = 0;
         this.thrustPower = 0.1;
         this.maxSpeed = 10;
-        this.drag = 1.01; // Space has friction, don't worry about it.
+        this.drag = 1.01;
         this.bullets = [];
         this.firing = false;
         this.shipSounds = new ShipSounds();
+    }
+    explode() {
+        this.coordinate.x = this.game.screenWidth / 2;
+        this.coordinate.y = this.game.screenHeight / 2;
+        this.direction = 3/2 * Math.PI;
+        this.xVelocity = 0;
+        this.yVelocity = 0;
+        this.shipSounds.play('bigExplosion');
     }
     shoot() {
         if (!this.firing) {
@@ -28,17 +36,19 @@ export default class SpaceShip {
     }
     getShipVertices() {
         // get starting upright vertices
+        let currentX = this.coordinate.x;
+        let currentY = this.coordinate.y;
         let front = new Coordinates(
-            this.coordinate.x,
-            this.coordinate.y + (this.height / 2),
+            currentX,
+            currentY - (this.height / 2),
         );
         let left = new Coordinates(
-            this.coordinate.x - (this.width / 2),
-            this.coordinate.y - (this.height / 2),
+            currentX - (this.height / 2),
+            currentY + (this.width / 2),
         );
         let right = new Coordinates(
-            this.coordinate.x + (this.width / 2),
-            this.coordinate.y - (this.height / 2),
+            currentX + (this.height / 2),
+            currentY + (this.width / 2),
         );
 
         // translate to the origin, rotate to the direction, translate back into place.
@@ -50,9 +60,9 @@ export default class SpaceShip {
     }
     checkCollision() {
         this.game.asteroids.forEach(asteroid => {
+            if (getLineLength(this.coordinate, asteroid.coordinate) > asteroid.radius + 20) return;
             if (polygonCircleCollision(this.getShipVertices(), asteroid.coordinate, asteroid.radius)) {
-                // asteroid.explode();
-                console.log('colliding');
+                this.explode();
             }
         });
     }
@@ -98,7 +108,7 @@ export default class SpaceShip {
         this.bullets.forEach(bullet => bullet.update(timeDelta));
         this.checkCollision();
     }
-        draw(context) {
+    draw(context) {
         context.save(); // save the current transformation matrix
 
         context.translate(this.coordinate.x, this.coordinate.y); // move to the center of the triangle
