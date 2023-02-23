@@ -1,4 +1,3 @@
-
 // TODO:
 //  Add collision detection between ship and asteroids.
 //  Make sure asteroids can't spawn on top of the ship.
@@ -11,7 +10,6 @@
 //  Add score system.
 //  look into web audio api instead of audio tag.
 //  Ship should be able to enter hyperspace
-
 
 import Game from './game.js';
 
@@ -31,9 +29,9 @@ window.addEventListener('load', () => {
         game.update(timeDelta);
         game.draw(context);
         requestAnimationFrame(animate);
-    }
+    };
     animate(0);
-})
+});
 
 // Thoughts:
 // I'm doing a lot of polling booleans or checking if values are contained

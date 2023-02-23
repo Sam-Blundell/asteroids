@@ -1,15 +1,16 @@
-import Bullet from "./bullet.js";
-import { Coordinates, getLineLength, polygonCircleCollision } from "./collisiondetection.js";
-import { ShipSounds } from "./soundmanager.js";
-import { wrapPosition } from "./helperFunctions.js";
+import Bullet from './bullet.js';
+import { Coordinates, getLineLength, polygonCircleCollision } from './collisiondetection.js';
+import { ShipSounds } from './soundmanager.js';
+import wrapPosition from './helperFunctions.js';
+
 export default class SpaceShip {
     constructor(game) {
         this.game = game;
         this.width = 20;
         this.height = 30;
         this.coordinate = new Coordinates(game.screenWidth / 2, game.screenHeight / 2);
-        this.direction = 3/2 * Math.PI; // 270 degrees = facing vertical
-        this.turnSpeed = 2 * Math.PI / 120;
+        this.direction = (3 / 2) * Math.PI; // 270 degrees = facing vertical
+        this.turnSpeed = 2 * (Math.PI / 120);
         this.xVelocity = 0;
         this.yVelocity = 0;
         this.thrustPower = 0.1;
@@ -19,14 +20,16 @@ export default class SpaceShip {
         this.firing = false;
         this.shipSounds = new ShipSounds();
     }
+
     explode() {
         this.coordinate.x = this.game.screenWidth / 2;
         this.coordinate.y = this.game.screenHeight / 2;
-        this.direction = 3/2 * Math.PI;
+        this.direction = (3 / 2) * Math.PI;
         this.xVelocity = 0;
         this.yVelocity = 0;
         this.shipSounds.play('bigExplosion');
     }
+
     shoot() {
         if (!this.firing) {
             this.bullets.push(new Bullet(this));
@@ -34,10 +37,11 @@ export default class SpaceShip {
             this.firing = true;
         }
     }
+
     getShipVertices() {
         // get starting upright vertices
-        let currentX = this.coordinate.x;
-        let currentY = this.coordinate.y;
+        const currentX = this.coordinate.x;
+        const currentY = this.coordinate.y;
         let front = new Coordinates(
             currentX,
             currentY - (this.height / 2),
@@ -58,14 +62,20 @@ export default class SpaceShip {
 
         return [front, left, right];
     }
+
     checkCollision() {
-        this.game.asteroids.forEach(asteroid => {
+        this.game.asteroids.forEach((asteroid) => {
             if (getLineLength(this.coordinate, asteroid.coordinate) > asteroid.radius + 20) return;
-            if (polygonCircleCollision(this.getShipVertices(), asteroid.coordinate, asteroid.radius)) {
+            if (polygonCircleCollision(
+                this.getShipVertices(),
+                asteroid.coordinate,
+                asteroid.radius,
+            )) {
                 this.explode();
             }
         });
     }
+
     update(timeDelta, input) {
         // move the ship in the direction it's facing
         if (input.has('ArrowUp')) {
@@ -87,7 +97,13 @@ export default class SpaceShip {
         this.coordinate.x += this.xVelocity;
         this.coordinate.y += this.yVelocity;
         // wrap around when moving beyond the edge of the screen.
-        wrapPosition(this.game.screenWidth, this.game.screenHeight, this.coordinate, this.width, this.height);
+        this.coordinate = wrapPosition(
+            this.game.screenWidth,
+            this.game.screenHeight,
+            this.coordinate,
+            this.width,
+            this.height,
+        );
 
         // turning the ship
         if (input.has('ArrowRight')) {
@@ -104,14 +120,16 @@ export default class SpaceShip {
             this.firing = false;
         }
 
-        this.bullets = this.bullets.filter(bullet => bullet.markedForDeletion === false);
-        this.bullets.forEach(bullet => bullet.update(timeDelta));
+        this.bullets = this.bullets.filter((bullet) => bullet.markedForDeletion === false);
+        this.bullets.forEach((bullet) => bullet.update(timeDelta));
         this.checkCollision();
     }
+
     draw(context) {
         context.save(); // save the current transformation matrix
 
-        context.translate(this.coordinate.x, this.coordinate.y); // move to the center of the triangle
+        // move to the center of the triangle
+        context.translate(this.coordinate.x, this.coordinate.y);
         context.rotate(this.direction); // rotate the triangle
         context.beginPath();
         context.moveTo(this.height / 2, 0);
@@ -122,6 +140,6 @@ export default class SpaceShip {
 
         context.restore(); // restore the previous transformation matrix
 
-        this.bullets.forEach(bullet => bullet.draw(context));
+        this.bullets.forEach((bullet) => bullet.draw(context));
     }
 }

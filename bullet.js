@@ -1,5 +1,6 @@
-import { Coordinates, pointCircleCollision } from "./collisiondetection.js";
-import { wrapPosition } from "./helperFunctions.js";
+import { Coordinates, pointCircleCollision } from './collisiondetection.js';
+import wrapPosition from './helperFunctions.js';
+
 export default class Bullet {
     constructor(spaceship) {
         this.game = spaceship.game;
@@ -17,22 +18,30 @@ export default class Bullet {
         this.bulletLifetime = 2000;
         this.markedForDeletion = false;
     }
+
     checkCollision() {
-        this.game.asteroids.forEach(asteroid => {
+        this.game.asteroids.forEach((asteroid) => {
             if (pointCircleCollision(this.coordinate, asteroid.coordinate, asteroid.radius + 2)) {
                 asteroid.explode();
                 this.markedForDeletion = true;
             }
         });
     }
+
     update(timeDelta) {
         this.age += timeDelta;
         if (this.age > this.bulletLifetime) this.markedForDeletion = true;
         this.coordinate.x += this.xVelocity;
         this.coordinate.y += this.yVelocity;
-        wrapPosition(this.game.screenWidth, this.game.screenHeight, this.coordinate, this.size)
+        this.coordinate = wrapPosition(
+            this.game.screenWidth,
+            this.game.screenHeight,
+            this.coordinate,
+            this.size,
+        );
         this.checkCollision();
     }
+
     draw(context) {
         context.fillRect(this.coordinate.x, this.coordinate.y, this.size, this.size);
     }

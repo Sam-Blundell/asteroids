@@ -6,18 +6,18 @@ export default class InputHandler {
             'ArrowLeft',
             'ArrowDown',
             'ArrowUp',
-            'Space'
+            'Space',
         ]));
         this.pressedKeys = new Set();
-        window.addEventListener('keydown', event => {
+        window.addEventListener('keydown', (event) => {
             if (this.validKeys.has(event.code)) {
                 this.pressedKeys.add(event.code);
             }
         });
-        window.addEventListener('keyup', event => {
+        window.addEventListener('keyup', (event) => {
             if (this.pressedKeys.has(event.code)) {
                 this.pressedKeys.delete(event.code);
             }
-        })
+        });
     }
 }

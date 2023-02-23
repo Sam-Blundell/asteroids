@@ -1,6 +1,7 @@
-import { Coordinates } from "./collisiondetection.js";
-import { wrapPosition } from "./helperFunctions.js";
-import { Debris } from "./particle.js";
+import { Coordinates } from './collisiondetection.js';
+import wrapPosition from './helperFunctions.js';
+import Debris from './particle.js';
+
 class Asteroid {
     constructor(asteroid) {
         // game, xPos, and yPos will be undefined if the asteroid is created
@@ -15,18 +16,24 @@ class Asteroid {
         this.yVelocity = Math.sin(this.direction);
         this.markedForDeletion = false;
     }
+
     explode() {
         this.markedForDeletion = true;
         this.game.asteroidSounds.play(this.explosionType);
-        for (let i = 0; i < this.radius; i++) {
-            this.game.debris.push(new Debris(this.game, this));
-        }
+        this.game.debris = Array.from({ length: this.radius }, () => new Debris(this.game, this));
     }
+
     update() {
         this.coordinate.x += this.xVelocity * this.speed;
         this.coordinate.y += this.yVelocity * this.speed;
-        wrapPosition(this.game.screenWidth, this.game.screenHeight, this.coordinate, this.radius);
+        this.coordinate = wrapPosition(
+            this.game.screenWidth,
+            this.game.screenHeight,
+            this.coordinate,
+            this.radius,
+        );
     }
+
     draw(context) {
         context.beginPath();
         context.arc(this.coordinate.x, this.coordinate.y, this.radius, 0, Math.PI * 2, true);
@@ -34,17 +41,12 @@ class Asteroid {
     }
 }
 
-export class BigAsteroid extends Asteroid {
+export class SmallAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
-        this.radius = 50;
-        this.speed = Math.random() * 0.5 + 1;
-        this.explosionType = 'bigExplosion';
-    }
-    explode() {
-        super.explode();
-        this.game.asteroids.push(new MediumAsteroid(this));
-        this.game.asteroids.push(new MediumAsteroid(this));
+        this.radius = 15;
+        this.speed = Math.random() * 2 + 1.5;
+        this.explosionType = 'smallExplosion';
     }
 }
 
@@ -55,6 +57,7 @@ export class MediumAsteroid extends Asteroid {
         this.speed = Math.random() * 1 + 1;
         this.explosionType = 'mediumExplosion';
     }
+
     explode() {
         super.explode();
         this.game.asteroids.push(new SmallAsteroid(this));
@@ -62,11 +65,17 @@ export class MediumAsteroid extends Asteroid {
     }
 }
 
-export class SmallAsteroid extends Asteroid {
+export class BigAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
-        this.radius = 15 ;
-        this.speed = Math.random() * 2 + 1.5 ;
-        this.explosionType = 'smallExplosion';
+        this.radius = 50;
+        this.speed = Math.random() * 0.5 + 1;
+        this.explosionType = 'bigExplosion';
+    }
+
+    explode() {
+        super.explode();
+        this.game.asteroids.push(new MediumAsteroid(this));
+        this.game.asteroids.push(new MediumAsteroid(this));
     }
 }
