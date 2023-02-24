@@ -2,12 +2,14 @@ import InputHandler from './inputHandler.js';
 import SpaceShip from './spaceship.js';
 import { BigAsteroid } from './asteroid.js';
 import { AsteroidSounds } from './soundmanager.js';
+import UI from './UI.js';
 
 export default class Game {
     constructor(height, width) {
         this.screenHeight = height;
         this.screenWidth = width;
         this.input = new InputHandler(this);
+        this.UI = new UI(this);
         this.spaceShip = new SpaceShip(this);
         this.asteroids = [];
         this.asteroidSounds = new AsteroidSounds();
@@ -23,7 +25,7 @@ export default class Game {
 
     updateScore(points) {
         this.score += points;
-        if (this.score > (this.extraLives + 1) * 10000) {
+        if (this.score >= (this.extraLives + 1) * 10000) {
             this.lives += 1;
             this.extraLives += 1;
         }
@@ -47,5 +49,6 @@ export default class Game {
         this.spaceShip.draw(context);
         this.asteroids.forEach((asteroid) => asteroid.draw(context));
         this.debris.forEach((debris) => debris.draw(context));
+        this.UI.draw(context);
     }
 }
