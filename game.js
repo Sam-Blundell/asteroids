@@ -34,9 +34,7 @@ export default class Game {
     }
 
     update(timeDelta) {
-        if (this.lives > 0) {
-            this.spaceShip.update(timeDelta, this.input.pressedKeys);
-        }
+        this.spaceShip.update(timeDelta, this.input.pressedKeys);
         this.asteroids = this.asteroids.filter((asteroid) => asteroid.markedForDeletion === false);
         this.asteroids.forEach((asteroid) => asteroid.update());
         if (this.asteroids.length === 0) {
@@ -51,7 +49,7 @@ export default class Game {
         context.fillStyle = 'black';
         context.fillRect(0, 0, this.screenWidth, this.screenHeight);
         context.fillStyle = 'white';
-        if (this.lives > 0) {
+        if (this.lives > 0 && !this.spaceShip.waitingToRespawn) {
             this.spaceShip.draw(context);
         }
         this.asteroids.forEach((asteroid) => asteroid.draw(context));

@@ -1,5 +1,5 @@
 import { Coordinates, pointCircleCollision } from './collisiondetection.js';
-import wrapPosition from './helperFunctions.js';
+import { wrapPosition } from './helperFunctions.js';
 
 export default class Bullet {
     constructor(spaceship) {

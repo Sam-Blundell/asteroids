@@ -16,4 +16,9 @@ const wrapPosition = (screenWidth, screenHeight, coordinate, width, height = wid
     return wrappedCoordinate;
 };
 
-export default wrapPosition;
+const notInMiddle = (spaceObject) => spaceObject.coordinate.x < 400
+    || spaceObject.coordinate.x > 600
+    || spaceObject.coordinate.y < 300
+    || spaceObject.coordinate.y > 500;
+
+export { wrapPosition, notInMiddle };

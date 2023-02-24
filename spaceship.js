@@ -1,7 +1,7 @@
 import Bullet from './bullet.js';
 import { circleRectangleCollision, Coordinates } from './collisiondetection.js';
 import { ShipSounds } from './soundmanager.js';
-import wrapPosition from './helperFunctions.js';
+import { wrapPosition, notInMiddle } from './helperFunctions.js';
 
 const vertical = (3 / 2) * Math.PI;
 
@@ -21,15 +21,22 @@ export default class SpaceShip {
         this.bullets = [];
         this.firing = false;
         this.shipSounds = new ShipSounds();
+        this.waitingToRespawn = false;
+        this.deathClock = 0;
     }
 
     explode() {
+        this.shipSounds.play('bigExplosion');
+        this.waitingToRespawn = true;
+    }
+
+    respawn() {
         this.coordinate.x = this.game.screenWidth / 2;
         this.coordinate.y = this.game.screenHeight / 2;
         this.direction = vertical;
         this.xVelocity = 0;
         this.yVelocity = 0;
-        this.shipSounds.play('bigExplosion');
+        this.waitingToRespawn = false;
     }
 
     shoot() {
@@ -128,7 +135,17 @@ export default class SpaceShip {
 
         this.bullets = this.bullets.filter((bullet) => bullet.markedForDeletion === false);
         this.bullets.forEach((bullet) => bullet.update(timeDelta));
-        this.checkCollision();
+        if (!this.waitingToRespawn) {
+            this.checkCollision();
+        }
+
+        if (this.waitingToRespawn) {
+            if ((this.deathClock > 1000) && this.game.asteroids.every(notInMiddle)) {
+                this.respawn();
+                this.deathClock = 0;
+            }
+            this.deathClock += timeDelta;
+        }
     }
 
     draw(context) {

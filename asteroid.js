@@ -1,5 +1,5 @@
 import { Coordinates } from './collisiondetection.js';
-import wrapPosition from './helperFunctions.js';
+import { wrapPosition } from './helperFunctions.js';
 import Debris from './particle.js';
 
 class Asteroid {
