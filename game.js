@@ -12,10 +12,21 @@ export default class Game {
         this.asteroids = [];
         this.asteroidSounds = new AsteroidSounds();
         this.debris = [];
+        this.score = 0;
+        this.lives = 3;
+        this.extraLives = 0;
     }
 
     spawnAsteroids(asteroidCount) {
         this.asteroids = Array.from({ length: asteroidCount }, () => new BigAsteroid(this));
+    }
+
+    updateScore(points) {
+        this.score += points;
+        if (this.score > (this.extraLives + 1) * 10000) {
+            this.lives += 1;
+            this.extraLives += 1;
+        }
     }
 
     update(timeDelta) {

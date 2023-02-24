@@ -23,7 +23,7 @@ class Asteroid {
     }
 
     explode() {
-        this.game.score += this.pointValue;
+        this.game.updateScore(this.pointValue);
         this.markedForDeletion = true;
         this.game.asteroidSounds.play(this.explosionType);
         this.game.debris = Array.from({ length: this.radius }, () => new Debris(this.game, this));

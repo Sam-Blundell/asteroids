@@ -75,7 +75,9 @@ export default class SpaceShip {
                 asteroid.radius,
             );
             if (collision) {
+                this.game.lives -= 1;
                 this.explode();
+                asteroid.explode();
             }
         });
     }
