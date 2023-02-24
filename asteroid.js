@@ -8,7 +8,7 @@ class Asteroid {
         // by the spawnAsteroids method from the game class.
         this.game = asteroid.game || asteroid;
         this.coordinate = new Coordinates(
-            asteroid.coordinate?.x || Math.floor(Math.random() * this.game.screenWidth),
+            asteroid.coordinate?.x || Asteroid.newAsteroidPosition(),
             asteroid.coordinate?.y || Math.floor(Math.random() * this.game.screenHeight),
         );
         this.direction = Math.random() * 2 * Math.PI;
@@ -17,7 +17,13 @@ class Asteroid {
         this.markedForDeletion = false;
     }
 
+    static newAsteroidPosition() {
+        const rand = Math.random();
+        return Math.floor(rand < 0.5 ? (rand * 400) + 100 : (rand * 400) + 700);
+    }
+
     explode() {
+        this.game.score += this.pointValue;
         this.markedForDeletion = true;
         this.game.asteroidSounds.play(this.explosionType);
         this.game.debris = Array.from({ length: this.radius }, () => new Debris(this.game, this));
@@ -45,6 +51,7 @@ export class SmallAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
         this.radius = 15;
+        this.pointValue = 100;
         this.speed = Math.random() * 2.5 + 1.5;
         this.explosionType = 'smallExplosion';
     }
@@ -54,6 +61,7 @@ export class MediumAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
         this.radius = 30;
+        this.pointValue = 50;
         this.speed = Math.random() * 1.5 + 1;
         this.explosionType = 'mediumExplosion';
     }
@@ -69,7 +77,8 @@ export class BigAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
         this.radius = 60;
-        this.speed = Math.random() * 1 + 1;
+        this.pointValue = 20;
+        this.speed = Math.random() * 1 + 0.5;
         this.explosionType = 'bigExplosion';
     }
 
