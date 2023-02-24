@@ -17,9 +17,11 @@ export default class Game {
         this.score = 0;
         this.lives = 3;
         this.extraLives = 0;
+        this.round = 0;
     }
 
-    spawnAsteroids(asteroidCount) {
+    spawnAsteroids() {
+        const asteroidCount = this.round > 4 ? 11 : (this.round * 2) + 2;
         this.asteroids = Array.from({ length: asteroidCount }, () => new BigAsteroid(this));
     }
 
@@ -32,11 +34,14 @@ export default class Game {
     }
 
     update(timeDelta) {
-        this.spaceShip.update(timeDelta, this.input.pressedKeys);
+        if (this.lives > 0) {
+            this.spaceShip.update(timeDelta, this.input.pressedKeys);
+        }
         this.asteroids = this.asteroids.filter((asteroid) => asteroid.markedForDeletion === false);
         this.asteroids.forEach((asteroid) => asteroid.update());
         if (this.asteroids.length === 0) {
-            this.spawnAsteroids(4);
+            this.round += 1;
+            this.spawnAsteroids();
         }
         this.debris = this.debris.filter((debris) => debris.markedForDeletion === false);
         this.debris.forEach((debris) => debris.update(timeDelta));
@@ -46,7 +51,9 @@ export default class Game {
         context.fillStyle = 'black';
         context.fillRect(0, 0, this.screenWidth, this.screenHeight);
         context.fillStyle = 'white';
-        this.spaceShip.draw(context);
+        if (this.lives > 0) {
+            this.spaceShip.draw(context);
+        }
         this.asteroids.forEach((asteroid) => asteroid.draw(context));
         this.debris.forEach((debris) => debris.draw(context));
         this.UI.draw(context);
