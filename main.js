@@ -16,7 +16,7 @@ import Game from './game.js';
 window.addEventListener('load', () => {
     const gameScreen = document.getElementById('gameScreen');
     const context = gameScreen.getContext('2d');
-    gameScreen.height = 700;
+    gameScreen.height = 800;
     gameScreen.width = 1000;
     context.strokeStyle = 'white';
     context.lineWidth = 1;
