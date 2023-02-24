@@ -8,8 +8,8 @@ const vertical = (3 / 2) * Math.PI;
 export default class SpaceShip {
     constructor(game) {
         this.game = game;
-        this.width = 20;
-        this.height = 30;
+        this.width = 18;
+        this.height = 26;
         this.coordinate = new Coordinates(game.screenWidth / 2, game.screenHeight / 2);
         this.direction = vertical;
         this.turnSpeed = 2 * (Math.PI / 120);
