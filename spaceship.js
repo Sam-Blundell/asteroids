@@ -1,7 +1,9 @@
 import Bullet from './bullet.js';
-import { Coordinates, getLineLength, polygonCircleCollision } from './collisiondetection.js';
+import { circleRectangleCollision, Coordinates } from './collisiondetection.js';
 import { ShipSounds } from './soundmanager.js';
 import wrapPosition from './helperFunctions.js';
+
+const vertical = (3 / 2) * Math.PI;
 
 export default class SpaceShip {
     constructor(game) {
@@ -9,7 +11,7 @@ export default class SpaceShip {
         this.width = 20;
         this.height = 30;
         this.coordinate = new Coordinates(game.screenWidth / 2, game.screenHeight / 2);
-        this.direction = (3 / 2) * Math.PI; // 270 degrees = facing vertical
+        this.direction = vertical;
         this.turnSpeed = 2 * (Math.PI / 120);
         this.xVelocity = 0;
         this.yVelocity = 0;
@@ -24,7 +26,7 @@ export default class SpaceShip {
     explode() {
         this.coordinate.x = this.game.screenWidth / 2;
         this.coordinate.y = this.game.screenHeight / 2;
-        this.direction = (3 / 2) * Math.PI;
+        this.direction = vertical;
         this.xVelocity = 0;
         this.yVelocity = 0;
         this.shipSounds.play('bigExplosion');
@@ -65,12 +67,14 @@ export default class SpaceShip {
 
     checkCollision() {
         this.game.asteroids.forEach((asteroid) => {
-            if (getLineLength(this.coordinate, asteroid.coordinate) > asteroid.radius + 20) return;
-            if (polygonCircleCollision(
-                this.getShipVertices(),
+            const collision = circleRectangleCollision(
+                this.coordinate,
+                this.height,
+                this.width,
                 asteroid.coordinate,
                 asteroid.radius,
-            )) {
+            );
+            if (collision) {
                 this.explode();
             }
         });
