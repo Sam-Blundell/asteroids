@@ -108,7 +108,7 @@ export default class SpaceShip {
         }
 
         // firing laser
-        if (input.has('Space')) {
+        if (input.has('Space') && !this.waitingToRespawn) {
             this.shoot();
         } else {
             this.firing = false;
