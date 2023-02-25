@@ -18,11 +18,18 @@ export default class SpaceShip {
         this.thrustPower = 0.1;
         this.maxSpeed = 10;
         this.drag = 1.01;
-        this.bullets = [];
         this.firing = false;
         this.shipSounds = new ShipSounds();
         this.waitingToRespawn = false;
-        this.deathClock = 0;
+        this.respawnInterval = 0;
+    }
+
+    shoot() {
+        if (!this.firing) {
+            this.game.playerBullets.push(new Bullet(this.game)); // new
+            this.shipSounds.play('laser');
+            this.firing = true;
+        }
     }
 
     explode() {
@@ -37,39 +44,6 @@ export default class SpaceShip {
         this.xVelocity = 0;
         this.yVelocity = 0;
         this.waitingToRespawn = false;
-    }
-
-    shoot() {
-        if (!this.firing) {
-            this.bullets.push(new Bullet(this));
-            this.shipSounds.play('laser');
-            this.firing = true;
-        }
-    }
-
-    getShipVertices() {
-        // get starting upright vertices
-        const currentX = this.coordinate.x;
-        const currentY = this.coordinate.y;
-        let front = new Coordinates(
-            currentX,
-            currentY - (this.height / 2),
-        );
-        let left = new Coordinates(
-            currentX - (this.height / 2),
-            currentY + (this.width / 2),
-        );
-        let right = new Coordinates(
-            currentX + (this.height / 2),
-            currentY + (this.width / 2),
-        );
-
-        // translate to the origin, rotate to the direction, translate back into place.
-        front = front.subtract(this.coordinate).rotate(this.direction).add(this.coordinate);
-        left = left.subtract(this.coordinate).rotate(this.direction).add(this.coordinate);
-        right = right.subtract(this.coordinate).rotate(this.direction).add(this.coordinate);
-
-        return [front, left, right];
     }
 
     checkCollision() {
@@ -90,6 +64,11 @@ export default class SpaceShip {
     }
 
     update(timeDelta, input) {
+        // collision check
+        if (!this.waitingToRespawn) {
+            this.checkCollision();
+        }
+
         // move the ship in the direction it's facing
         if (input.has('ArrowUp')) {
             this.shipSounds.playThrusters();
@@ -133,18 +112,14 @@ export default class SpaceShip {
             this.firing = false;
         }
 
-        this.bullets = this.bullets.filter((bullet) => bullet.markedForDeletion === false);
-        this.bullets.forEach((bullet) => bullet.update(timeDelta));
-        if (!this.waitingToRespawn) {
-            this.checkCollision();
-        }
-
-        if (this.waitingToRespawn) {
-            if ((this.deathClock > 1000) && this.game.asteroids.every(notInMiddle)) {
+        // respawn dead ship if player has lives left.
+        if (this.waitingToRespawn && this.game.lives > 0) {
+            // Wait a few seconds and respawn if the centre of the screen is clear of asteroids.
+            if ((this.respawnInterval > 1000) && this.game.asteroids.every(notInMiddle)) {
                 this.respawn();
-                this.deathClock = 0;
+                this.respawnInterval = 0;
             }
-            this.deathClock += timeDelta;
+            this.respawnInterval += timeDelta;
         }
     }
 
@@ -162,7 +137,5 @@ export default class SpaceShip {
         context.stroke();
 
         context.restore(); // restore the previous transformation matrix
-
-        this.bullets.forEach((bullet) => bullet.draw(context));
     }
 }

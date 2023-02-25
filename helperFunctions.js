@@ -21,4 +21,29 @@ const notInMiddle = (spaceObject) => spaceObject.coordinate.x < 400
     || spaceObject.coordinate.y < 300
     || spaceObject.coordinate.y > 500;
 
-export { wrapPosition, notInMiddle };
+const getShipVertices = (ship) => {
+    // get starting upright vertices
+    const currentX = ship.coordinate.x;
+    const currentY = ship.coordinate.y;
+    let front = new Coordinates(
+        currentX,
+        currentY - (ship.height / 2),
+    );
+    let left = new Coordinates(
+        currentX - (ship.height / 2),
+        currentY + (ship.width / 2),
+    );
+    let right = new Coordinates(
+        currentX + (ship.height / 2),
+        currentY + (ship.width / 2),
+    );
+
+    // translate to the origin, rotate to the direction, translate back into place.
+    front = front.subtract(ship.coordinate).rotate(ship.direction).add(ship.coordinate);
+    left = left.subtract(ship.coordinate).rotate(ship.direction).add(ship.coordinate);
+    right = right.subtract(ship.coordinate).rotate(ship.direction).add(ship.coordinate);
+
+    return [front, left, right];
+};
+
+export { wrapPosition, notInMiddle, getShipVertices };

@@ -1,15 +1,12 @@
 // TODO:
-//  Add collision detection between ship and asteroids.
 //  Make sure asteroids can't spawn on top of the ship.
 //  Use a static asset for asteroids rather than drawing them.
 //  Add engine animation when ship is accellerating.
-//  Add explode method for ship.
 //  Add particle effect when ship explodes.
-//  Add lives system.
-//  Add UI.
-//  Add score system.
 //  look into web audio api instead of audio tag.
 //  Ship should be able to enter hyperspace
+//  Pre-draw ship and asteroids and then use asset instead of drawing every time
+//  saucers
 
 import Game from './game.js';
 
@@ -38,16 +35,8 @@ window.addEventListener('load', () => {
 // in arrays on every update. Feels stupid. Maybe event emitters and consumers
 // would be an alternative?
 //
-// Maybe a lot of these entities should be extensions of a basic "space object"
-// class.
-//
-// What the hell are matrix transformations?
-//
 // Look into "squared euclidean distance" calculation as a possible alternative
 // to the normal pythagoras method of finding distances between points. It
 // might be more computationally efficient.
-//
-// It would be really nice to be able to do operator overloading so I can add
-// two point classes together without needing to use my add() method.
 //
 // Do some reading on the jordan curve theorem

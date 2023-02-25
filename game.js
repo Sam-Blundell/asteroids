@@ -14,13 +14,15 @@ export default class Game {
         this.asteroids = [];
         this.asteroidSounds = new AsteroidSounds();
         this.debris = [];
+        this.playerBullets = [];
         this.score = 0;
         this.lives = 3;
         this.extraLives = 0;
         this.round = 0;
     }
 
-    spawnAsteroids() {
+    startNewRound() {
+        this.round += 1;
         const asteroidCount = this.round > 4 ? 11 : (this.round * 2) + 2;
         this.asteroids = Array.from({ length: asteroidCount }, () => new BigAsteroid(this));
     }
@@ -34,13 +36,13 @@ export default class Game {
     }
 
     update(timeDelta) {
+        if (this.asteroids.length === 0) this.startNewRound();
         this.spaceShip.update(timeDelta, this.input.pressedKeys);
         this.asteroids = this.asteroids.filter((asteroid) => asteroid.markedForDeletion === false);
         this.asteroids.forEach((asteroid) => asteroid.update());
-        if (this.asteroids.length === 0) {
-            this.round += 1;
-            this.spawnAsteroids();
-        }
+        this.playerBullets = this.playerBullets
+            .filter((bullet) => bullet.markedForDeletion === false);
+        this.playerBullets.forEach((bullet) => bullet.update(timeDelta));
         this.debris = this.debris.filter((debris) => debris.markedForDeletion === false);
         this.debris.forEach((debris) => debris.update(timeDelta));
     }
@@ -53,6 +55,7 @@ export default class Game {
             this.spaceShip.draw(context);
         }
         this.asteroids.forEach((asteroid) => asteroid.draw(context));
+        this.playerBullets.forEach((bullet) => bullet.draw(context));
         this.debris.forEach((debris) => debris.draw(context));
         this.UI.draw(context);
     }
