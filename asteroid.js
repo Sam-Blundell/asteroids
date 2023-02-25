@@ -17,6 +17,8 @@ class Asteroid {
         this.markedForDeletion = false;
     }
 
+    // Asteroid shapes are created here and converted to static images so they only
+    // have to be generated once when the asteroid is first initialised.
     static NewAsteroidShape(radius) {
         const canvas = document.createElement('canvas');
         canvas.width = radius * 2;

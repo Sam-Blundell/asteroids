@@ -12,6 +12,7 @@ export default class SpaceShip {
         this.width = 18;
         this.height = 26;
         this.coordinate = new Coordinates(game.screenWidth / 2, game.screenHeight / 2);
+        this.shape = SpaceShip.DrawShip(this.width, this.height);
         this.direction = vertical;
         this.turnSpeed = 2 * (Math.PI / 120);
         this.xVelocity = 0;
@@ -20,9 +21,29 @@ export default class SpaceShip {
         this.maxSpeed = 10;
         this.drag = 1.01;
         this.firing = false;
+        this.engine = false;
         this.shipSounds = new ShipSounds();
         this.waitingToRespawn = false;
         this.respawnInterval = 0;
+    }
+
+    static DrawShip(width, height) {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext('2d');
+        context.strokeStyle = 'white';
+
+        context.beginPath();
+        context.moveTo(width / 2, 1);
+        context.lineTo(width - 1, height - 1);
+        context.lineTo(1, height - 1);
+        context.lineTo(width / 2, 1);
+        context.stroke();
+
+        const image = new Image();
+        image.src = canvas.toDataURL();
+        return image;
     }
 
     shoot() {
@@ -74,6 +95,7 @@ export default class SpaceShip {
         // move the ship in the direction it's facing
         if (input.has('ArrowUp')) {
             this.shipSounds.playThrusters();
+            this.engine = true;
             this.xVelocity += this.thrustPower * Math.cos(this.direction);
             this.yVelocity += this.thrustPower * Math.sin(this.direction);
             // limit speed
@@ -85,6 +107,7 @@ export default class SpaceShip {
             }
         } else {
             this.shipSounds.stopThrusters();
+            this.engine = false;
             this.xVelocity = Math.abs(this.xVelocity) < 0.1 ? 0 : this.xVelocity / this.drag;
             this.yVelocity = Math.abs(this.yVelocity) < 0.1 ? 0 : this.yVelocity / this.drag;
         }
@@ -128,15 +151,27 @@ export default class SpaceShip {
     draw(context) {
         context.save(); // save the current transformation matrix
 
-        // move to the center of the triangle
+        // move to the center of the image
         context.translate(this.coordinate.x, this.coordinate.y);
-        context.rotate(this.direction); // rotate the triangle
-        context.beginPath();
-        context.moveTo(this.height / 2, 0);
-        context.lineTo(-(this.height / 2), this.width / 2);
-        context.lineTo(-(this.height / 2), -(this.width / 2));
-        context.lineTo(this.height / 2, 0);
-        context.stroke();
+
+        // rotate the image around its center
+        context.rotate(this.direction + Math.PI / 2);
+
+        // draw the image, centered at the origin (0, 0)
+        context.drawImage(
+            this.shape,
+            -this.width / 2,
+            -this.height / 2,
+            this.width,
+            this.height,
+        );
+        if (this.engine) {
+            context.beginPath();
+            context.moveTo(-this.width / 4, this.height / 2);
+            context.lineTo(0, this.height / 1.3);
+            context.lineTo(this.width / 4, this.height / 2);
+            context.stroke();
+        }
 
         context.restore(); // restore the previous transformation matrix
     }
