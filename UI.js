@@ -4,7 +4,7 @@ export default class UI {
     constructor(game) {
         this.game = game;
         this.fontSize = 30;
-        this.fontFamily = 'Arial';
+        this.fontFamily = 'Courier New';
         this.ship = SpaceShip.DrawShip(15, 22);
         this.shipOffset = 20;
     }
