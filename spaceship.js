@@ -2,6 +2,7 @@ import Bullet from './bullet.js';
 import { circleRectangleCollision, Coordinates } from './collisiondetection.js';
 import { ShipSounds } from './soundmanager.js';
 import { wrapPosition, notInMiddle } from './helperFunctions.js';
+import { Wreckage } from './particle.js';
 
 const vertical = (3 / 2) * Math.PI;
 
@@ -34,6 +35,7 @@ export default class SpaceShip {
 
     explode() {
         this.shipSounds.play('bigExplosion');
+        this.game.wreckage = Array.from({ length: 6 }, () => new Wreckage(this.game, this));
         this.waitingToRespawn = true;
     }
 
@@ -115,7 +117,7 @@ export default class SpaceShip {
         // respawn dead ship if player has lives left.
         if (this.waitingToRespawn && this.game.lives > 0) {
             // Wait a few seconds and respawn if the centre of the screen is clear of asteroids.
-            if ((this.respawnInterval > 1000) && this.game.asteroids.every(notInMiddle)) {
+            if ((this.respawnInterval > 3000) && this.game.asteroids.every(notInMiddle)) {
                 this.respawn();
                 this.respawnInterval = 0;
             }

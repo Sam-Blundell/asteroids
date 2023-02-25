@@ -14,6 +14,7 @@ export default class Game {
         this.asteroids = [];
         this.asteroidSounds = new AsteroidSounds();
         this.debris = [];
+        this.wreckage = [];
         this.playerBullets = [];
         this.score = 0;
         this.lives = 3;
@@ -45,6 +46,8 @@ export default class Game {
         this.playerBullets.forEach((bullet) => bullet.update(timeDelta));
         this.debris = this.debris.filter((debris) => debris.markedForDeletion === false);
         this.debris.forEach((debris) => debris.update(timeDelta));
+        this.wreckage = this.wreckage.filter((wreck) => wreck.markedForDeletion === false);
+        this.wreckage.forEach((wreck) => wreck.update(timeDelta));
     }
 
     draw(context) {
@@ -57,6 +60,7 @@ export default class Game {
         this.asteroids.forEach((asteroid) => asteroid.draw(context));
         this.playerBullets.forEach((bullet) => bullet.draw(context));
         this.debris.forEach((debris) => debris.draw(context));
+        this.wreckage.forEach((wreck) => wreck.draw(context));
         this.UI.draw(context);
     }
 }
