@@ -17,6 +17,34 @@ class Asteroid {
         this.markedForDeletion = false;
     }
 
+    static NewAsteroidShape(radius) {
+        const canvas = document.createElement('canvas');
+        canvas.width = radius * 2;
+        canvas.height = radius * 2;
+        const context = canvas.getContext('2d');
+        context.strokeStyle = '#FFFFFF';
+
+        context.beginPath();
+        const points = 8;
+        const angle = (Math.PI * 2) / points;
+        for (let i = 0; i < points; i += 1) {
+            const surfaceDepth = (radius / 2) + (Math.random() * (radius / 2));
+            const xPos = surfaceDepth * Math.cos(i * angle);
+            const yPos = surfaceDepth * Math.sin(i * angle);
+            if (i === 0) {
+                context.moveTo(xPos + radius, yPos + radius);
+            } else {
+                context.lineTo(xPos + radius, yPos + radius);
+            }
+        }
+        context.closePath();
+        context.stroke();
+
+        const image = new Image();
+        image.src = canvas.toDataURL();
+        return image;
+    }
+
     static newAsteroidPosition() {
         const rand = Math.random();
         return Math.floor(rand < 0.5 ? (rand * 400) + 100 : (rand * 400) + 700);
@@ -41,9 +69,11 @@ class Asteroid {
     }
 
     draw(context) {
-        context.beginPath();
-        context.arc(this.coordinate.x, this.coordinate.y, this.radius, 0, Math.PI * 2, true);
-        context.stroke();
+        context.drawImage(
+            this.shape,
+            this.coordinate.x - this.radius,
+            this.coordinate.y - this.radius,
+        );
     }
 }
 
@@ -51,6 +81,7 @@ export class SmallAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
         this.radius = 15;
+        this.shape = Asteroid.NewAsteroidShape(this.radius);
         this.pointValue = 100;
         this.speed = Math.random() * 2.5 + 1.5;
         this.explosionType = 'smallExplosion';
@@ -61,6 +92,7 @@ export class MediumAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
         this.radius = 30;
+        this.shape = Asteroid.NewAsteroidShape(this.radius);
         this.pointValue = 50;
         this.speed = Math.random() * 1.5 + 1;
         this.explosionType = 'mediumExplosion';
@@ -77,6 +109,7 @@ export class BigAsteroid extends Asteroid {
     constructor(asteroid) {
         super(asteroid);
         this.radius = 60;
+        this.shape = Asteroid.NewAsteroidShape(this.radius);
         this.pointValue = 20;
         this.speed = Math.random() * 1 + 0.5;
         this.explosionType = 'bigExplosion';

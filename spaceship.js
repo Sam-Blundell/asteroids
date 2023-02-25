@@ -55,7 +55,7 @@ export default class SpaceShip {
                 this.height,
                 this.width,
                 asteroid.coordinate,
-                asteroid.radius,
+                asteroid.radius * 0.6,
             );
             if (collision) {
                 this.game.lives -= 1;
