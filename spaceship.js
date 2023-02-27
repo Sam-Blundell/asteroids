@@ -48,8 +48,8 @@ export default class SpaceShip {
 
     shoot() {
         if (!this.firing) {
+            this.game.soundManager.beep();
             this.game.playerBullets.push(new Bullet(this.game)); // new
-            this.shipSounds.play('laser');
             this.firing = true;
         }
     }

@@ -3,12 +3,14 @@ import SpaceShip from './spaceship.js';
 import { BigAsteroid } from './asteroid.js';
 import { AsteroidSounds } from './soundmanager.js';
 import UI from './UI.js';
+import AudioManager from './audio/audiomanager.js';
 
 export default class Game {
     constructor(height, width) {
         this.screenHeight = height;
         this.screenWidth = width;
         this.input = new InputHandler(this);
+        this.soundManager = new AudioManager(this);
         this.UI = new UI(this);
         this.spaceShip = new SpaceShip(this);
         this.asteroids = [];

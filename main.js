@@ -1,12 +1,14 @@
 // TODO:
 //  Make sure asteroids can't spawn on top of the ship.
-//  Use a static asset for asteroids rather than drawing them.
-//  Add engine animation when ship is accellerating.
-//  Add particle effect when ship explodes.
-//  look into web audio api instead of audio tag.
+//  Transition the rest of the sounds to the webaudio api
+//  look into buffering for sound effects.
 //  Ship should be able to enter hyperspace
-//  Pre-draw ship and asteroids and then use asset instead of drawing every time
 //  saucers
+//  Start screen
+//  Get better font
+//  game over screen improvements
+//  high-score screen
+//  keep high scores saved, serverless?
 
 import Game from './game.js';
 
@@ -31,12 +33,9 @@ window.addEventListener('load', () => {
 });
 
 // Thoughts:
-// I'm doing a lot of polling booleans or checking if values are contained
-// in arrays on every update. Feels stupid. Maybe event emitters and consumers
-// would be an alternative?
+// event emitters and consumers would be an alternative to filtering arrays?
 //
 // Look into "squared euclidean distance" calculation as a possible alternative
-// to the normal pythagoras method of finding distances between points. It
-// might be more computationally efficient.
+// to the pythagoras for finding distances.
 //
-// Do some reading on the jordan curve theorem
+// jordan curve theorem
